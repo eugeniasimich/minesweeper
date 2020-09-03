@@ -6,3 +6,4 @@ target
 /.settings
 /RUNNING_PID
 /public
+*.DS_Store
