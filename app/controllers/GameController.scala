@@ -4,24 +4,23 @@ import javax.inject._
 import play.api.mvc._
 import play.api.libs.json.{Json, JsError}
 import model.GameModel._
-import GameManager.createNewGame
 
 @Singleton
 class GameController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
 
   def newGame(x: Int, y: Int, n: Int) = Action {
-    Ok(Json.toJson(createNewGame(x, y, n)))
+    Ok(Json.toJson(GameManager.createNewGame(x, y, n)))
   }
 
   def openCell() = Action(parse.json) { request =>
-    val placeResult = request.body.validate[Game]
+    val placeResult = request.body.validate[GameAction]
     placeResult.fold(
       errors => {
         BadRequest(Json.obj("message" -> JsError.toJson(errors)))
       },
-      g => {
-        println(g.data.mkString(","))
-        Ok(Json.obj("message" -> ("Ok")))
+      action => {
+        val g = GameManager.openCell(action.g, action.i, action.j)
+        Ok(Json.toJson(g))
       }
     )
   }

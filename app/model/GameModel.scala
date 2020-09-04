@@ -37,4 +37,7 @@ object GameModel {
 
   implicit val fmtGame = Json.format[Game]
 
+  case class GameAction(g: Game, i: Int, j: Int)
+  implicit val fmtClick = Json.format[GameAction]
+
 }
