@@ -4,12 +4,13 @@ import javax.inject._
 import play.api.mvc._
 import play.api.libs.json.{JsString, Json, JsError}
 import model.GameModel._
+import GameManager.createNewGame
 
 @Singleton
 class GameController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
 
   def newGame(x: Int, y: Int, n: Int) = Action {
-    Ok(Json.toJson(a))
+    Ok(Json.toJson(createNewGame(x, y, n)))
   }
 
   def openCell() = Action(parse.json) { request =>
