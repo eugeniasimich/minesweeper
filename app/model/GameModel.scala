@@ -1,7 +1,6 @@
 package model
 
 import play.api.libs.json.Json
-import utils.Random.randomSetOfPositions
 
 object GameModel {
 
@@ -16,7 +15,11 @@ object GameModel {
 
   implicit val fmtCell = Json.format[Cell]
 
-  case class Game(data: Array[Array[Cell]], nRows: Int, nCols: Int, nMines: Int) {
+  case class Game(data: Array[Array[Cell]],
+                  nRows: Int,
+                  nCols: Int,
+                  nMines: Int,
+                  hasLost: Boolean = false) {
 
     def putMine(row: Int, col: Int) = {
       data(row)(col) = data(row)(col).putMine

@@ -2,7 +2,7 @@ package controllers
 
 import javax.inject._
 import play.api.mvc._
-import play.api.libs.json.{JsString, Json, JsError}
+import play.api.libs.json.{Json, JsError}
 import model.GameModel._
 import GameManager.createNewGame
 
