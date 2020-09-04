@@ -31,6 +31,11 @@ const App = () => {
       });
   };
 
+  const flagCell = (event, i, j) => {
+    event.preventDefault();
+    alert("right click on " + i + " " + j);
+  };
+
   //const [flags, setFlags] = useState([]);
   const [game, setGame] = useState();
 
@@ -39,7 +44,11 @@ const App = () => {
       <h1>Welcome to Minesweeper!</h1>
       <SizeForm onConfirm={getGame} />
       {game && (
-        <Grid onCellClick={(i, j) => postOpenCell(i, j)} gridData={game.data} />
+        <Grid
+          onCellRightClick={flagCell}
+          onCellClick={(i, j) => postOpenCell(i, j)}
+          gridData={game.data}
+        />
       )}
     </div>
   );
