@@ -7,6 +7,7 @@ object GameModel {
   case class Cell(isOpen: Boolean, isMine: Boolean, n: Int) {
     def putMine = copy(isMine = true)
     def setValue(value: Int) = copy(n = value)
+    def open = copy(isOpen = true)
   }
 
   case object Cell {
@@ -19,10 +20,17 @@ object GameModel {
                   nRows: Int,
                   nCols: Int,
                   nMines: Int,
-                  hasLost: Boolean = false) {
+                  hasLost: Boolean = false,
+                  hasWon: Boolean = false) {
 
-    def putMine(row: Int, col: Int) = {
-      data(row)(col) = data(row)(col).putMine
+    def updateCell(row: Int, col: Int, f: Cell => Cell) = {
+      data(row)(col) = f(data(row)(col))
+    }
+
+    def updateAll(f: Cell => Cell) = {
+      for (i <- 0 until nRows; j <- 0 until nCols) {
+        data(i)(j) = f(data(i)(j))
+      }
     }
 
   }
