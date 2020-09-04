@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Grid } from "./Grid";
 import { SizeForm } from "./SizeForm";
 
@@ -8,39 +8,11 @@ const App = () => {
       accept: "application/json",
     })
       .then((r) => r.json())
-      .then(console.log);
+      .then((j) => j.data && setData(j.data));
   };
 
-  const data = [
-    [
-      {
-        isOpen: true,
-        isMine: true,
-        isFlag: false,
-        n: 0,
-      },
-      {
-        isOpen: false,
-        isMine: true,
-        isFlag: false,
-        n: 0,
-      },
-    ],
-    [
-      {
-        isOpen: true,
-        isMine: false,
-        isFlag: false,
-        n: 1,
-      },
-      {
-        isOpen: false,
-        isMine: false,
-        isFlag: true,
-        n: 1,
-      },
-    ],
-  ];
+  //const [flags, setFlags] = useState([]);
+  const [data, setData] = useState([]);
 
   return (
     <div>
