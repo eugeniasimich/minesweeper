@@ -6,3 +6,8 @@ export const cellShape = {
   isFlag: PropTypes.bool,
   n: PropTypes.number,
 };
+
+export const posShape = {
+  row: PropTypes.number,
+  col: PropTypes.number,
+};

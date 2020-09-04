@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Grid } from "./Grid";
+import { cellHasFlag } from "./flagUtils";
 import { SizeForm } from "./SizeForm";
 
 const App = () => {
@@ -31,12 +32,14 @@ const App = () => {
       });
   };
 
-  const flagCell = (event, i, j) => {
+  const flagCell = (event, row, col) => {
     event.preventDefault();
-    alert("right click on " + i + " " + j);
+    if (!cellHasFlag(row, col, flags))
+      setFlags(flags.concat([{ row: row, col: col }]));
+    else setFlags(flags.filter((p) => !(p.row === row && p.col === col)));
   };
 
-  //const [flags, setFlags] = useState([]);
+  const [flags, setFlags] = useState([]);
   const [game, setGame] = useState();
 
   return (
@@ -48,6 +51,7 @@ const App = () => {
           onCellRightClick={flagCell}
           onCellClick={(i, j) => postOpenCell(i, j)}
           gridData={game.data}
+          flags={flags}
         />
       )}
     </div>

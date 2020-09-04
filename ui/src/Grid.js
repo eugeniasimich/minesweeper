@@ -1,9 +1,10 @@
 import PropTypes from "prop-types";
-import cellShape from "./shapes";
+import { cellShape, posShape } from "./shapes";
 import React from "react";
 import { Cell } from "./Cell";
+import { cellHasFlag } from "./flagUtils";
 
-export const Grid = ({ gridData, onCellClick, onCellRightClick }) => {
+export const Grid = ({ gridData, onCellClick, onCellRightClick, flags }) => {
   const renderRow = (row, x) => {
     return row.map((cell, y) => {
       return (
@@ -12,6 +13,7 @@ export const Grid = ({ gridData, onCellClick, onCellRightClick }) => {
             onClick={() => onCellClick(x, y)}
             onCellRightClick={(e) => onCellRightClick(e, x, y)}
             value={cell}
+            hasFlag={cellHasFlag(x, y, flags)}
           />
         </td>
       );
@@ -31,4 +33,5 @@ Grid.propTypes = {
   gridData: PropTypes.arrayOf(PropTypes.arrayOf(cellShape)),
   onCellClick: PropTypes.func,
   onCellRightClick: PropTypes.func,
+  flags: PropTypes.arrayOf(posShape),
 };

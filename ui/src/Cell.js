@@ -3,16 +3,16 @@ import cellShape from "./shapes";
 import React from "react";
 import Button from "@material-ui/core/Button";
 
-export const Cell = ({ value, onClick, onCellRightClick }) => {
+export const Cell = ({ value, onClick, onCellRightClick, hasFlag }) => {
   const label = () => {
     if (value.isOpen) {
       return value.isMine ? "*" : value.n === 0 ? " " : value.n;
     } else {
-      return value.isFlag ? "F" : " ";
+      return hasFlag ? "F" : " ";
     }
   };
 
-  const isDisabled = value.isOpen || value.isFlag;
+  const isDisabled = value.isOpen;
 
   return (
     <Button
@@ -24,7 +24,7 @@ export const Cell = ({ value, onClick, onCellRightClick }) => {
       }}
       variant="outlined"
       disabled={isDisabled}
-      onClick={onClick}
+      onClick={(e) => !hasFlag && onClick(e)}
       onContextMenu={onCellRightClick}
     >
       {label()}
@@ -36,4 +36,5 @@ Cell.propTypes = {
   value: PropTypes.objectOf(PropTypes.shape(cellShape)),
   onClick: PropTypes.func,
   onCellRightClick: PropTypes.func,
+  hasFlag: PropTypes.bool,
 };
