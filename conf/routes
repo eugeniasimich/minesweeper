@@ -5,5 +5,9 @@
 # Serve index page from public directory
 GET     /                           controllers.FrontendController.index()
 
+# Serve Game stuff
+GET     /api/newGame         controllers.GameController.newGame()
+
 # Serve static assets under public directory
 GET     /*file                      controllers.FrontendController.assetOrDefault(file)
+
