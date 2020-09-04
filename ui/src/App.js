@@ -46,14 +46,19 @@ const App = () => {
     <div>
       <h1>Welcome to Minesweeper!</h1>
       <SizeForm onConfirm={getGame} />
-      {game && (
-        <Grid
-          onCellRightClick={flagCell}
-          onCellClick={(i, j) => postOpenCell(i, j)}
-          gridData={game.data}
-          flags={flags}
-        />
-      )}
+      {game &&
+        (game.hasWon ? (
+          <h1>You won!</h1>
+        ) : game.hasLost ? (
+          <h1>You lost :(</h1>
+        ) : (
+          <Grid
+            onCellRightClick={flagCell}
+            onCellClick={(i, j) => postOpenCell(i, j)}
+            gridData={game.data}
+            flags={flags}
+          />
+        ))}
     </div>
   );
 };
