@@ -6,7 +6,9 @@
 GET     /                           controllers.FrontendController.index()
 
 # Serve Game stuff
-GET     /api/newGame/:x/:y/:n         controllers.GameController.newGame(x : Int, y: Int, n: Int)
+GET     /api/newGame/:x/:y/:n       controllers.GameController.newGame(x : Int, y: Int, n: Int)
+
+POST    /api/openCell               controllers.GameController.openCell()
 
 # Serve static assets under public directory
 GET     /*file                      controllers.FrontendController.assetOrDefault(file)
