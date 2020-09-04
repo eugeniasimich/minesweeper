@@ -5,6 +5,7 @@ import { SizeForm } from "./SizeForm";
 
 const App = () => {
   const getGame = (x, y, n) => {
+    setFlags([]);
     return fetch(`/api/newGame/${x}/${y}/${n}`, {
       accept: "application/json",
     })
