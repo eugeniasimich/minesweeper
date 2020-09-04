@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { Grid } from "./Grid";
 import { cellHasFlag } from "./flagUtils";
 import { SizeForm } from "./SizeForm";
+import { TimeTracker } from "./TimeTracker";
 
 const App = () => {
   const getGame = (x, y, n) => {
     setFlags([]);
+    setStartDate(new Date().toLocaleString());
     return fetch(`/api/newGame/${x}/${y}/${n}`, {
       accept: "application/json",
     })
@@ -42,7 +44,7 @@ const App = () => {
 
   const [flags, setFlags] = useState([]);
   const [game, setGame] = useState();
-
+  const [startDate, setStartDate] = useState();
   return (
     <div>
       <h1>Welcome to Minesweeper!</h1>
@@ -60,6 +62,12 @@ const App = () => {
             flags={flags}
           />
         ))}
+      {game && (
+        <TimeTracker
+          startDate={startDate}
+          finished={game.hasWon || game.hasLost}
+        ></TimeTracker>
+      )}
     </div>
   );
 };
