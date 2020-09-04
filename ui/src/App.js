@@ -1,10 +1,10 @@
 import React from "react";
-import Button from "@material-ui/core/Button";
 import { Grid } from "./Grid";
+import { SizeForm } from "./SizeForm";
 
 const App = () => {
-  const getGame = () => {
-    return fetch("/api/newGame", {
+  const getGame = (x, y, n) => {
+    return fetch(`/api/newGame/${x}/${y}/${n}`, {
       accept: "application/json",
     })
       .then((r) => r.json())
@@ -45,7 +45,7 @@ const App = () => {
   return (
     <div>
       <h1>Welcome to Minesweeper!</h1>
-      <Button onClick={getGame}>Create New Game</Button>
+      <SizeForm onConfirm={getGame} />
       <Grid onCellClick={(i, j) => alert(i + "," + j)} gridData={data} />
     </div>
   );
