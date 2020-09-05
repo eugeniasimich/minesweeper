@@ -19,7 +19,10 @@ val isWindows = System.getProperty("os.name").toLowerCase().contains("win")
 
 // Execute on commandline, depending on the operating system. Used to execute npm commands.
 def runOnCommandline(script: String)(implicit dir: File): Int = {
-  if(isWindows){ Process("cmd /c set CI=true&&" + script, dir) } else { Process("env CI=true " + script, dir) } }!
+  if (isWindows) { Process("cmd /c set CI=true&&" + script, dir) } else {
+    Process("env CI=true " + script, dir)
+  }
+} !
 
 // Check of node_modules directory exist in given directory.
 def isNodeModulesInstalled(implicit dir: File): Boolean = (dir / "node_modules").exists()
@@ -34,11 +37,12 @@ def ifNodeModulesInstalled(task: => Int)(implicit dir: File): Int =
   else Error
 
 // Execute frontend test task. Update to change the frontend test task.
-def executeUiTests(implicit dir: File): Int = ifNodeModulesInstalled(runOnCommandline(FrontendCommands.test))
+def executeUiTests(implicit dir: File): Int =
+  ifNodeModulesInstalled(runOnCommandline(FrontendCommands.test))
 
 // Execute frontend prod build task. Update to change the frontend prod build task.
-def executeProdBuild(implicit dir: File): Int = ifNodeModulesInstalled(runOnCommandline(FrontendCommands.build))
-
+def executeProdBuild(implicit dir: File): Int =
+  ifNodeModulesInstalled(runOnCommandline(FrontendCommands.build))
 
 // Create frontend build tasks for prod, dev and test execution.
 
@@ -64,3 +68,5 @@ stage := (stage dependsOn `ui-prod-build`).value
 
 // Execute frontend test task prior to play test execution.
 test := ((test in Test) dependsOn `ui-test`).value
+
+publishLocal in Docker := ((publishLocal in Docker) dependsOn `ui-prod-build`).value
