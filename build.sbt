@@ -12,6 +12,14 @@ libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0
 libraryDependencies += jdbc
 libraryDependencies ++= Seq("org.postgresql" % "postgresql" % "9.3-1102-jdbc41")
 
+lazy val doobieVersion = "0.9.0"
+
+libraryDependencies ++= Seq(
+  "org.tpolecat" %% "doobie-core" % doobieVersion,
+  "org.tpolecat" %% "doobie-postgres" % doobieVersion,
+  "org.tpolecat" %% "doobie-specs2" % doobieVersion
+)
+
 // Adds additional packages into Twirl
 //TwirlKeys.templateImports += "eugenia.controllers._"
 

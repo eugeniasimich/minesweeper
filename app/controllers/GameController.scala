@@ -12,6 +12,7 @@ class GameController @Inject()(cc: ControllerComponents, config: Configuration)
     extends AbstractController(cc) {
 
   val db = new DB(config.get[String]("db.default.url"))
+  val username = "euge" //until logins are implemented
 
   def newGame(x: Int, y: Int, n: Int) = Action {
     Ok(Json.toJson(GameManager.createNewGame(x, y, n)))
@@ -37,14 +38,15 @@ class GameController @Inject()(cc: ControllerComponents, config: Configuration)
         BadRequest(Json.obj("message" -> JsError.toJson(errors)))
       },
       saveGame => {
-        db.saveGame(saveGame)
+        val r = db.saveGame(saveGame, username)
+        println("result updated " + r)
         Ok(Json.toJson(saveGame))
       }
     )
   }
 
   def savedGames() = Action {
-    Ok(Json.toJson(db.listOfGames("euge")))
+    Ok(Json.toJson(db.listOfGames(username)))
   }
 
 }

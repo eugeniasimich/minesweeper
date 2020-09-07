@@ -1,71 +1,56 @@
 package model
 
-import java.sql.{Connection, DriverManager, ResultSet}
-
+import doobie._
+import doobie.implicits._
+import cats.effect.IO
+import cats._
+import cats.effect._
+import cats.data._
+import cats.implicits._
+import doobie.util.ExecutionContexts
 import model.GameModel.SaveGame
 import play.api.libs.json.Json
-
-import scala.util.{Failure, Success, Try}
+import fs2.Stream
 
 class DB(url: String) {
+  implicit val cs = IO.contextShift(ExecutionContexts.synchronous)
 
-  private def maybeCreate(conn: Connection): Try[Boolean] = {
-    val stm = conn.prepareStatement(
-      "CREATE TABLE IF NOT EXISTS games(id SERIAL NOT NULL PRIMARY KEY, username VARCHAR(225) NOT NULL, savedgame TEXT, name VARCHAR(255))")
-    Try(stm.execute())
+  case class DBGame(username: String, savedgame: String, name: String)
 
-  }
+  def saveGame(saveGame: SaveGame, username: String): Int = {
+    val xa = Transactor.fromDriverManager[IO](
+      "org.postgresql.Driver",
+      url
+    )
 
-  private def insert(saveGame: SaveGame, conn: Connection) = {
-    val prep =
-      conn.prepareStatement("INSERT INTO games (username, savedgame, name) VALUES (?, ?, ?) ")
-    prep.setString(1, "euge")
-    prep.setString(2, Json.stringify(Json.toJson(saveGame)))
-    prep.setString(3, saveGame.name)
-    Try(prep.executeUpdate)
-  }
+    val create = sql"""CREATE TABLE IF NOT EXISTS games (
+      id SERIAL NOT NULL PRIMARY KEY, 
+      username VARCHAR(225) NOT NULL, 
+      savedgame TEXT, 
+      name VARCHAR(255))""".update.run
 
-  private def getGame(conn: Connection, name: String, username: String) = {
+    def insert(saveGame: SaveGame, username: String) =
+      sql"insert into games (username, savedgame, name) values ( $username, ${Json.stringify(
+        Json.toJson(saveGame))}, ${saveGame.name})".update.run
 
-    val prep = conn.prepareStatement("SELECT * FROM games WHERE name = ? and username = ?")
-    prep.setString(1, name)
-    prep.setString(2, username)
-    Try(prep.executeQuery()).flatMap { res =>
-      Json
-        .parse(res.getString("savedgame"))
-        .validate[SaveGame]
-        .fold(err => Failure(new Exception(err.toString())), Success(_))
-    }
-  }
-
-  def saveGame(saveGame: SaveGame) = {
-
-    val conn = DriverManager.getConnection(url)
-    for {
-      _ <- maybeCreate(conn)
-      _ <- insert(saveGame, conn)
-    } yield ()
-
-    conn.close()
+    (create, insert(saveGame, username)).mapN(_ + _).transact(xa).unsafeRunSync()
 
   }
 
   def listOfGames(username: String): List[String] = {
-    val conn = DriverManager.getConnection(url)
-    val prep = conn.prepareStatement("SELECT name FROM games WHERE username = ?")
-    prep.setString(1, username)
-    val res = Try(prep.executeQuery())
+    val xa = Transactor.fromDriverManager[IO](
+      "org.postgresql.Driver",
+      url
+    )
 
-    def buildListOfNames(res: ResultSet, l: List[String]): List[String] = {
-      if (res.next())
-        buildListOfNames(res, res.getString("name") :: l)
-      else
-        l
-    }
-    val listOfNames = res.map(r => buildListOfNames(r, List[String]())).getOrElse(List[String]())
-
-    conn.close()
-    listOfNames
+    val r: List[String] = sql"select name from games where username = $username"
+      .query[String]
+      .stream
+      .take(5)
+      .compile
+      .toList
+      .transact(xa)
+      .unsafeRunSync()
+    r
   }
-
 }
