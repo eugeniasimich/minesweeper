@@ -3,7 +3,7 @@ package controllers
 import javax.inject._
 import model.DB
 import play.api.mvc._
-import play.api.libs.json.{JsError, Json}
+import play.api.libs.json.{JsError, JsString, Json}
 import model.GameModel._
 import play.api.Configuration
 
@@ -39,7 +39,6 @@ class GameController @Inject()(cc: ControllerComponents, config: Configuration)
       },
       saveGame => {
         val r = db.saveGame(saveGame, username)
-        println("result updated " + r)
         Ok(Json.toJson(saveGame))
       }
     )
@@ -49,4 +48,11 @@ class GameController @Inject()(cc: ControllerComponents, config: Configuration)
     Ok(Json.toJson(db.listOfGames(username)))
   }
 
+  def resumeGame(name: String) = Action {
+    val maybeResult: Option[SaveGame] = db.resumeGame(name, username)
+    maybeResult match {
+      case None    => NotFound(Json.obj("message" -> JsString("Game not found")))
+      case Some(r) => Ok(Json.toJson(r))
+    }
+  }
 }

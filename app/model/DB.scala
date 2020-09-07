@@ -8,14 +8,18 @@ import cats.effect._
 import cats.data._
 import cats.implicits._
 import doobie.util.ExecutionContexts
-import model.GameModel.SaveGame
+import model.GameModel._
 import play.api.libs.json.Json
 import fs2.Stream
 
 class DB(url: String) {
   implicit val cs = IO.contextShift(ExecutionContexts.synchronous)
 
-  case class DBGame(username: String, savedgame: String, name: String)
+  case class DBGame(username: String, savedgame: String, name: String) {
+    def toSaveGame: Option[SaveGame] = {
+      Json.toJson(savedgame).validate[SaveGame].fold[Option[SaveGame]](_ => None, Some(_))
+    }
+  }
 
   def saveGame(saveGame: SaveGame, username: String): Int = {
     val xa = Transactor.fromDriverManager[IO](
@@ -52,5 +56,22 @@ class DB(url: String) {
       .transact(xa)
       .unsafeRunSync()
     r
+  }
+
+  def resumeGame(name: String, username: String): Option[SaveGame] = {
+    val xa = Transactor.fromDriverManager[IO](
+      "org.postgresql.Driver",
+      url
+    )
+
+    val stringResult: Option[String] =
+      sql"""select savedgame from games where name = $name and username = $username"""
+        .query[String]
+        .option
+        .transact(xa)
+        .unsafeRunSync()
+    stringResult.flatMap { g =>
+      Json.parse(g).validate[SaveGame].fold[Option[SaveGame]](_ => None, Some(_))
+    }
   }
 }
