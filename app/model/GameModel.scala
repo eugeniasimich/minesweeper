@@ -13,7 +13,6 @@ object GameModel {
   case object Cell {
     def empty = Cell(false, false, 0)
   }
-
   implicit val fmtCell = Json.format[Cell]
 
   case class Game(data: Array[Array[Cell]],
@@ -34,10 +33,15 @@ object GameModel {
     }
 
   }
-
   implicit val fmtGame = Json.format[Game]
 
   case class GameAction(g: Game, i: Int, j: Int)
-  implicit val fmtClick = Json.format[GameAction]
+  implicit val fmtGameAction = Json.format[GameAction]
+
+  case class Position(row: Int, col: Int)
+  implicit val fmtPosition = Json.format[Position]
+
+  case class SavedGame(g: Game, flags: Array[Position], seconds: Long, name: String)
+  implicit val fmtSavedGame = Json.format[SavedGame]
 
 }

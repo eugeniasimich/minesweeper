@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Grid } from "./Grid";
 import { cellHasFlag } from "./flagUtils";
-import { SizeForm } from "./SizeForm";
+import { Menu } from "./Menu";
 import { TimeTracker } from "./TimeTracker";
 
 const App = () => {
@@ -18,7 +18,7 @@ const App = () => {
       .then((j) => setGame(j));
   };
 
-  const postOpenCell = (i, j) => {
+  const requestOpenCell = (i, j) => {
     const requestOptions = {
       method: "POST",
       headers: {
@@ -42,13 +42,40 @@ const App = () => {
     else setFlags(flags.filter((p) => !(p.row === row && p.col === col)));
   };
 
+  const requestSaveGame = (game, flags, seconds) => {
+    return (name) => {
+      const requestOptions = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
+        body: JSON.stringify({
+          g: game,
+          flags: flags,
+          seconds: 34,
+          name: name,
+        }),
+      };
+      return fetch("/api/saveGame", requestOptions)
+        .then((r) => r.json())
+        .then((j) => {
+          console.log(j);
+        });
+    };
+  };
+
   const [flags, setFlags] = useState([]);
   const [game, setGame] = useState();
   const [startDate, setStartDate] = useState();
   return (
     <div>
       <h1>Welcome to Minesweeper!</h1>
-      <SizeForm onConfirm={getGame} />
+      <Menu
+        onNewGame={getGame}
+        onSaveGame={requestSaveGame(game, flags, 1)}
+        showSave={game}
+      />
       {game &&
         (game.hasWon ? (
           <h1>You won!</h1>
@@ -57,7 +84,7 @@ const App = () => {
         ) : (
           <Grid
             onCellRightClick={flagCell}
-            onCellClick={(i, j) => postOpenCell(i, j)}
+            onCellClick={(i, j) => requestOpenCell(i, j)}
             gridData={game.data}
             flags={flags}
           />

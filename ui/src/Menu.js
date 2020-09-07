@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
+import FormDialog from "./FormDialog";
 
-export const SizeForm = ({ onConfirm }) => {
+export const Menu = ({ onNewGame, onSaveGame, showSave }) => {
   const [rows, setRows] = useState(10);
   const [cols, setCols] = useState(15);
   const [mines, setMines] = useState(5);
@@ -34,13 +35,20 @@ export const SizeForm = ({ onConfirm }) => {
         value={mines}
         onChange={(e) => setMines(e.target.value)}
       />
-      <Button onClick={() => onConfirm(rows, cols, mines)}>
+      <Button
+        variant="outlined"
+        color="primary"
+        onClick={() => onNewGame(rows, cols, mines)}
+      >
         Create New Game
       </Button>
+      {showSave && <FormDialog onConfirm={onSaveGame}>Save Game</FormDialog>}
     </div>
   );
 };
 
-SizeForm.propTypes = {
-  onConfirm: PropTypes.func,
+Menu.propTypes = {
+  onNewGame: PropTypes.func,
+  onSaveGame: PropTypes.func,
+  showSave: PropTypes.bool,
 };

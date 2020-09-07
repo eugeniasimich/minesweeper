@@ -25,4 +25,19 @@ class GameController @Inject()(cc: ControllerComponents) extends AbstractControl
     )
   }
 
+  def saveGame() = Action(parse.json) { request =>
+    val placeResult = request.body.validate[SavedGame]
+    placeResult.fold(
+      errors => {
+        BadRequest(Json.obj("message" -> JsError.toJson(errors)))
+      },
+      saveGame => {
+        println(s"""flags ${saveGame.flags.mkString(" - ")}""")
+        println(s"""name ${saveGame.name}""")
+        println(s"""seconds ${saveGame.seconds}""")
+        Ok(Json.toJson(saveGame))
+      }
+    )
+  }
+
 }
