@@ -75,6 +75,16 @@ const App = () => {
     };
   };
 
+  const getSavedGames = () => {
+    return fetch("/api/savedGames", {
+      accept: "application/json",
+    })
+      .then((r) => {
+        return r.json();
+      })
+      .then((j) => console.log(j));
+  };
+
   const [flags, setFlags] = useState([]);
   const [game, setGame] = useState();
   const [startDate, setStartDate] = useState();
@@ -86,6 +96,7 @@ const App = () => {
         onNewGame={getGame}
         onSaveGame={requestSaveGame(game, flags, 1)}
         showSave={game && !game.hasWon && !game.hasLost}
+        onResumeGame={getSavedGames}
       />
       {game && (
         <Grid

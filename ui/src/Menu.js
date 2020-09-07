@@ -4,7 +4,7 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import FormDialog from "./FormDialog";
 
-export const Menu = ({ onNewGame, onSaveGame, showSave }) => {
+export const Menu = ({ onNewGame, onSaveGame, showSave, onResumeGame }) => {
   const [rows, setRows] = useState(10);
   const [cols, setCols] = useState(15);
   const [mines, setMines] = useState(10);
@@ -45,6 +45,9 @@ export const Menu = ({ onNewGame, onSaveGame, showSave }) => {
         Create New Game
       </Button>
       {showSave && <FormDialog onConfirm={onSaveGame}>Save Game</FormDialog>}
+      <Button variant="outlined" color="primary" onClick={onResumeGame}>
+        Resume Game
+      </Button>
     </div>
   );
 };
@@ -53,4 +56,5 @@ Menu.propTypes = {
   onNewGame: PropTypes.func,
   onSaveGame: PropTypes.func,
   showSave: PropTypes.bool,
+  onResumeGame: PropTypes.func,
 };
