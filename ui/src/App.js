@@ -1,10 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Grid } from "./Grid";
 import { cellHasFlag } from "./flagUtils";
 import { Menu } from "./Menu";
 import { TimeTracker } from "./TimeTracker";
 
 const App = () => {
+  useEffect(() => {
+    return fetch(`/token`, {
+      accept: "application/json",
+    })
+      .then((r) => {
+        return r.json();
+      })
+      .then((j) => setCsrfToken(j));
+  }, []);
+
   const getGame = (x, y, n) => {
     setFlags([]);
     setStartDate(new Date().toLocaleString());
@@ -24,6 +34,7 @@ const App = () => {
       headers: {
         "Content-Type": "application/json",
         accept: "application/json",
+        "Csrf-Token": csrfToken,
       },
       body: JSON.stringify({ g: game, i: i, j: j }),
     };
@@ -49,6 +60,7 @@ const App = () => {
         headers: {
           "Content-Type": "application/json",
           accept: "application/json",
+          "Csrf-Token": csrfToken,
         },
         body: JSON.stringify({
           g: game,
@@ -68,6 +80,7 @@ const App = () => {
   const [flags, setFlags] = useState([]);
   const [game, setGame] = useState();
   const [startDate, setStartDate] = useState();
+  const [csrfToken, setCsrfToken] = useState();
   return (
     <div>
       <h1>Welcome to Minesweeper!</h1>

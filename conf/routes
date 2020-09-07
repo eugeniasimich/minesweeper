@@ -4,6 +4,7 @@
 
 # Serve index page from public directory
 GET     /                           controllers.FrontendController.index()
+GET     /token                      controllers.CSRFController.getToken()
 
 # Serve Game stuff
 GET     /api/newGame/:x/:y/:n       controllers.GameController.newGame(x : Int, y: Int, n: Int)
