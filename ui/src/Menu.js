@@ -13,27 +13,29 @@ export const Menu = ({ onNewGame, onSaveGame, showSave }) => {
     <div>
       <TextField
         type="number"
-        id="rows"
         label="Rows"
-        variant="filled"
         value={rows}
         onChange={(e) => setRows(e.target.value)}
       />
       <TextField
         type="number"
-        id="cols"
         label="Columns"
-        variant="filled"
         value={cols}
         onChange={(e) => setCols(e.target.value)}
       />
       <TextField
         type="number"
-        id="mines"
         label="Mines"
-        variant="filled"
         value={mines}
-        onChange={(e) => setMines(e.target.value)}
+        onChange={(e) =>
+          setMines(Math.max(1, Math.min(e.target.value, rows * cols - 1)))
+        }
+        InputProps={{
+          inputProps: {
+            min: 1,
+            max: rows * cols - 1,
+          },
+        }}
       />
       <Button
         variant="outlined"

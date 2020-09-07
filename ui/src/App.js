@@ -3,7 +3,7 @@ import { Grid } from "./Grid";
 import { cellHasFlag } from "./flagUtils";
 import { Menu } from "./Menu";
 import { TimeTracker } from "./TimeTracker";
-
+import "./App.css";
 const App = () => {
   useEffect(() => {
     return fetch(`/token`, {
@@ -22,7 +22,6 @@ const App = () => {
       accept: "application/json",
     })
       .then((r) => {
-        console.log(r);
         return r.json();
       })
       .then((j) => setGame(j));
@@ -41,7 +40,6 @@ const App = () => {
     return fetch("/api/openCell", requestOptions)
       .then((r) => r.json())
       .then((j) => {
-        console.log(j);
         setGame(j);
       });
   };
@@ -82,26 +80,24 @@ const App = () => {
   const [startDate, setStartDate] = useState();
   const [csrfToken, setCsrfToken] = useState();
   return (
-    <div>
+    <div className="App">
       <h1>Welcome to Minesweeper!</h1>
       <Menu
         onNewGame={getGame}
         onSaveGame={requestSaveGame(game, flags, 1)}
         showSave={game}
       />
-      {game &&
-        (game.hasWon ? (
-          <h1>You won!</h1>
-        ) : game.hasLost ? (
-          <h1>You lost :(</h1>
-        ) : (
-          <Grid
-            onCellRightClick={flagCell}
-            onCellClick={(i, j) => requestOpenCell(i, j)}
-            gridData={game.data}
-            flags={flags}
-          />
-        ))}
+      {game && (
+        <Grid
+          onCellRightClick={flagCell}
+          onCellClick={(i, j) => requestOpenCell(i, j)}
+          gridData={game.data}
+          flags={flags}
+        />
+      )}
+      {game && game.hasWon && <h1>You won!</h1>}
+      {game && game.hasLost && <h1>You lost :(</h1>}
+
       {game && (
         <TimeTracker
           startDate={startDate}
