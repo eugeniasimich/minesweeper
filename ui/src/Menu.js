@@ -3,8 +3,14 @@ import PropTypes from "prop-types";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import SaveGameDialog from "./SaveGameDialog";
-
-export const Menu = ({ onNewGame, onSaveGame, showSave, onResumeGame }) => {
+import ResumeGameDialog from "./ResumeGameDialog";
+export const Menu = ({
+  onNewGame,
+  onSaveGame,
+  showSave,
+  getResumeGameOptions,
+  onResumeGameSelection,
+}) => {
   const [rows, setRows] = useState(10);
   const [cols, setCols] = useState(15);
   const [mines, setMines] = useState(10);
@@ -47,9 +53,10 @@ export const Menu = ({ onNewGame, onSaveGame, showSave, onResumeGame }) => {
       {showSave && (
         <SaveGameDialog onConfirm={onSaveGame}>Save Game</SaveGameDialog>
       )}
-      <Button variant="outlined" color="primary" onClick={onResumeGame}>
-        Resume Game
-      </Button>
+      <ResumeGameDialog
+        onResumeGameSelection={onResumeGameSelection}
+        getResumeGameOptions={getResumeGameOptions}
+      />
     </div>
   );
 };
@@ -58,5 +65,5 @@ Menu.propTypes = {
   onNewGame: PropTypes.func,
   onSaveGame: PropTypes.func,
   showSave: PropTypes.bool,
-  onResumeGame: PropTypes.func,
+  onResumeGameSelection: PropTypes.func,
 };

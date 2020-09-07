@@ -8,7 +8,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
-export const FormDialog = ({ onConfirm }) => {
+export const SaveGameDialog = ({ onConfirm }) => {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
 
@@ -21,7 +21,6 @@ export const FormDialog = ({ onConfirm }) => {
   };
 
   const handleConfirm = () => {
-    console.log(name);
     setOpen(false);
     onConfirm(name);
   };
@@ -64,8 +63,8 @@ export const FormDialog = ({ onConfirm }) => {
   );
 };
 
-FormDialog.propTypes = {
+SaveGameDialog.propTypes = {
   onConfirm: PropTypes.func,
 };
 
-export default FormDialog;
+export default SaveGameDialog;

@@ -1,0 +1,74 @@
+import React, { useState, Fragment, useEffect } from "react";
+import PropTypes from "prop-types";
+import Button from "@material-ui/core/Button";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Dialog from "@material-ui/core/Dialog";
+
+export const ResumeGameDialog = ({ onResumeGameSelection }) => {
+  const getSavedGames = () => {
+    return fetch("/api/savedGames", {
+      accept: "application/json",
+    }).then((r) => {
+      return r.json();
+    });
+  };
+
+  const getGame = (name) => {
+    return fetch(`/api/resumeGame/${name}`, {
+      accept: "application/json",
+    }).then((r) => {
+      return r.json();
+    });
+  };
+
+  useEffect(() => {
+    getSavedGames().then((r) => setOptions(r));
+  }, []);
+
+  const [open, setOpen] = useState(false);
+  const [options, setOptions] = useState([]);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleListItemClick = (value) => {
+    setOpen(false);
+    getGame(value).then(onResumeGameSelection);
+  };
+
+  return (
+    <Fragment>
+      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+        Resume Game
+      </Button>
+      <Dialog onClose={handleClose} open={open}>
+        <DialogTitle>Choose a game to resume</DialogTitle>
+        <List>
+          {options.map((name) => (
+            <ListItem
+              button
+              onClick={() => handleListItemClick(name)}
+              key={name}
+            >
+              <ListItemText primary={name} />
+            </ListItem>
+          ))}
+        </List>
+      </Dialog>
+    </Fragment>
+  );
+};
+
+ResumeGameDialog.propTypes = {
+  onResumeGameSelection: PropTypes.func,
+};
+
+export default ResumeGameDialog;

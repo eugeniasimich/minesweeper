@@ -67,24 +67,16 @@ const App = () => {
           name: name,
         }),
       };
-      return fetch("/api/saveGame", requestOptions)
-        .then((r) => r.json())
-        .then((j) => {
-          console.log(j);
-        });
+      return fetch("/api/saveGame", requestOptions);
     };
   };
 
-  const getSavedGames = () => {
-    return fetch("/api/savedGames", {
-      accept: "application/json",
-    })
-      .then((r) => {
-        return r.json();
-      })
-      .then((j) => console.log(j));
+  const restoreGame = (savedGame) => {
+    savedGame && setStartDate(new Date().toLocaleString());
+    savedGame && setFlags(savedGame.flags);
+    savedGame && setGame(savedGame.g);
+    //TODO set name so it can be overwritten
   };
-
   const [flags, setFlags] = useState([]);
   const [game, setGame] = useState();
   const [startDate, setStartDate] = useState();
@@ -96,7 +88,7 @@ const App = () => {
         onNewGame={getGame}
         onSaveGame={requestSaveGame(game, flags, 1)}
         showSave={game && !game.hasWon && !game.hasLost}
-        onResumeGame={getSavedGames}
+        onResumeGameSelection={restoreGame}
       />
       {game && (
         <Grid
