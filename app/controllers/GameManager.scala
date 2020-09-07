@@ -1,7 +1,7 @@
 package controllers
 
 import model.GameModel.{Cell, Game}
-import utils.Random.randomSetOfPositions
+import utils.RandomUtil.randomSetOfPositions
 object GameManager {
 
   private def calculateSurroundingIndexes(row: Int, col: Int, nRows: Int, nCols: Int) = {

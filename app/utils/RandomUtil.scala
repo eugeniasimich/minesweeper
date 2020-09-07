@@ -2,10 +2,10 @@ package utils
 import scala.annotation.tailrec
 import scala.util.Random
 
-object Random {
+object RandomUtil {
+  val rnd = new Random
 
   def randomSetOfPositions(maxX: Int, maxY: Int, n: Int) = {
-    val rnd = new Random
     @tailrec
     def generateRandomSet(set: Set[(Int, Int)]): Set[(Int, Int)] = {
       if (set.size == n || n > maxX * maxY)

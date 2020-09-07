@@ -22,7 +22,10 @@ herokuSkipSubProjects in Compile := false
 //herokuFatJar in Compile := Some((assemblyOutputPath in assembly).value)
 
 herokuIncludePaths in Compile := Seq(
-  "app", "conf/routes", "ui", "public"
+  "app",
+  "conf/routes",
+  "ui",
+  "public"
 )
 
 packageName in Docker := "buscamines"
@@ -30,11 +33,7 @@ dockerExposedPorts ++= Seq(9000, 9001)
 //dockerRepository := Some("buscamines")
 dockerUsername := Some("jeuges")
 
-
-
 assemblyMergeStrategy in assembly := {
   case PathList("META-INF", xs @ _*) => MergeStrategy.discard
-  case x => MergeStrategy.concat
+  case x                             => MergeStrategy.concat
 }
-
-
