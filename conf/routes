@@ -10,6 +10,7 @@ GET     /token                      controllers.CSRFController.getToken()
 GET     /api/newGame/:x/:y/:n       controllers.GameController.newGame(x : Int, y: Int, n: Int)
 POST    /api/openCell               controllers.GameController.openCell()
 POST    /api/saveGame               controllers.GameController.saveGame()
+GET     /api/savedGames             controllers.GameController.savedGames()
 
 # Serve static assets under public directory
 GET     /*file                      controllers.FrontendController.assetOrDefault(file)

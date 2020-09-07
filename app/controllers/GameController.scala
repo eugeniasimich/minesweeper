@@ -11,6 +11,8 @@ import play.api.Configuration
 class GameController @Inject()(cc: ControllerComponents, config: Configuration)
     extends AbstractController(cc) {
 
+  val db = new DB(config.get[String]("db.default.url"))
+
   def newGame(x: Int, y: Int, n: Int) = Action {
     Ok(Json.toJson(GameManager.createNewGame(x, y, n)))
   }
@@ -35,11 +37,14 @@ class GameController @Inject()(cc: ControllerComponents, config: Configuration)
         BadRequest(Json.obj("message" -> JsError.toJson(errors)))
       },
       saveGame => {
-        val url = config.get[String]("db.default.url")
-        DB.saveGame(saveGame, url)
+        db.saveGame(saveGame)
         Ok(Json.toJson(saveGame))
       }
     )
+  }
+
+  def savedGames() = Action {
+    Ok(Json.toJson(db.listOfGames("euge")))
   }
 
 }

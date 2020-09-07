@@ -85,7 +85,7 @@ const App = () => {
       <Menu
         onNewGame={getGame}
         onSaveGame={requestSaveGame(game, flags, 1)}
-        showSave={game}
+        showSave={game && !game.hasWon && !game.hasLost}
       />
       {game && (
         <Grid

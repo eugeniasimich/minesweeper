@@ -1,22 +1,22 @@
 package model
 
-import java.sql.{Connection, DriverManager}
+import java.sql.{Connection, DriverManager, ResultSet}
 
 import model.GameModel.SaveGame
 import play.api.libs.json.Json
 
 import scala.util.{Failure, Success, Try}
 
-object DB {
+class DB(url: String) {
 
-  def maybeCreate(conn: Connection): Try[Boolean] = {
+  private def maybeCreate(conn: Connection): Try[Boolean] = {
     val stm = conn.prepareStatement(
       "CREATE TABLE IF NOT EXISTS games(id SERIAL NOT NULL PRIMARY KEY, username VARCHAR(225) NOT NULL, savedgame TEXT, name VARCHAR(255))")
     Try(stm.execute())
 
   }
 
-  def insert(saveGame: SaveGame, conn: Connection) = {
+  private def insert(saveGame: SaveGame, conn: Connection) = {
     val prep =
       conn.prepareStatement("INSERT INTO games (username, savedgame, name) VALUES (?, ?, ?) ")
     prep.setString(1, "euge")
@@ -25,7 +25,7 @@ object DB {
     Try(prep.executeUpdate)
   }
 
-  def getGame(conn: Connection, name: String, username: String) = {
+  private def getGame(conn: Connection, name: String, username: String) = {
 
     val prep = conn.prepareStatement("SELECT * FROM games WHERE name = ? and username = ?")
     prep.setString(1, name)
@@ -38,7 +38,7 @@ object DB {
     }
   }
 
-  def saveGame(saveGame: SaveGame, url: String) = {
+  def saveGame(saveGame: SaveGame) = {
 
     val conn = DriverManager.getConnection(url)
     for {
@@ -49,4 +49,23 @@ object DB {
     conn.close()
 
   }
+
+  def listOfGames(username: String): List[String] = {
+    val conn = DriverManager.getConnection(url)
+    val prep = conn.prepareStatement("SELECT name FROM games WHERE username = ?")
+    prep.setString(1, username)
+    val res = Try(prep.executeQuery())
+
+    def buildListOfNames(res: ResultSet, l: List[String]): List[String] = {
+      if (res.next())
+        buildListOfNames(res, res.getString("name") :: l)
+      else
+        l
+    }
+    val listOfNames = res.map(r => buildListOfNames(r, List[String]())).getOrElse(List[String]())
+
+    conn.close()
+    listOfNames
+  }
+
 }
