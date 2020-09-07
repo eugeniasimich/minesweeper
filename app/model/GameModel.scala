@@ -41,7 +41,7 @@ object GameModel {
   case class Position(row: Int, col: Int)
   implicit val fmtPosition = Json.format[Position]
 
-  case class SavedGame(g: Game, flags: Array[Position], seconds: Long, name: String)
-  implicit val fmtSavedGame = Json.format[SavedGame]
+  case class SaveGame(g: Game, flags: Array[Position], seconds: Long, name: String)
+  implicit val fmtSavedGame = Json.format[SaveGame]
 
 }

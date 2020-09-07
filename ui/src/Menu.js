@@ -7,7 +7,7 @@ import FormDialog from "./FormDialog";
 export const Menu = ({ onNewGame, onSaveGame, showSave }) => {
   const [rows, setRows] = useState(10);
   const [cols, setCols] = useState(15);
-  const [mines, setMines] = useState(5);
+  const [mines, setMines] = useState(10);
 
   return (
     <div>

@@ -1,12 +1,15 @@
 package controllers
 
 import javax.inject._
+import model.DB
 import play.api.mvc._
-import play.api.libs.json.{Json, JsError}
+import play.api.libs.json.{JsError, Json}
 import model.GameModel._
+import play.api.Configuration
 
 @Singleton
-class GameController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
+class GameController @Inject()(cc: ControllerComponents, config: Configuration)
+    extends AbstractController(cc) {
 
   def newGame(x: Int, y: Int, n: Int) = Action {
     Ok(Json.toJson(GameManager.createNewGame(x, y, n)))
@@ -26,15 +29,14 @@ class GameController @Inject()(cc: ControllerComponents) extends AbstractControl
   }
 
   def saveGame() = Action(parse.json) { request =>
-    val placeResult = request.body.validate[SavedGame]
+    val placeResult = request.body.validate[SaveGame]
     placeResult.fold(
       errors => {
         BadRequest(Json.obj("message" -> JsError.toJson(errors)))
       },
       saveGame => {
-        println(s"""flags ${saveGame.flags.mkString(" - ")}""")
-        println(s"""name ${saveGame.name}""")
-        println(s"""seconds ${saveGame.seconds}""")
+        val url = config.get[String]("db.default.url")
+        DB.saveGame(saveGame, url)
         Ok(Json.toJson(saveGame))
       }
     )
