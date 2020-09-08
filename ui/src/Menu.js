@@ -21,27 +21,21 @@ export const Menu = ({
         type="number"
         label="Rows"
         value={rows}
-        onChange={(e) => setRows(e.target.value)}
+        onChange={(e) => setRows(Math.max(1, Math.min(e.target.value, 50)))}
       />
       <TextField
         type="number"
         label="Columns"
         value={cols}
-        onChange={(e) => setCols(e.target.value)}
+        onChange={(e) => setCols(Math.max(1, Math.min(e.target.value, 50)))}
       />
       <TextField
         type="number"
         label="Mines"
         value={mines}
         onChange={(e) =>
-          setMines(Math.max(1, Math.min(e.target.value, rows * cols - 1)))
+          setMines(Math.max(0, Math.min(e.target.value, rows * cols - 1)))
         }
-        InputProps={{
-          inputProps: {
-            min: 1,
-            max: rows * cols - 1,
-          },
-        }}
       />
       <Button
         variant="outlined"
