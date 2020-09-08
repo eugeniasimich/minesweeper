@@ -20,15 +20,18 @@ class GameDAO(databaseConfig: DatabaseConfig) {
   def saveGame(saveGame: SaveGame, username: String): Int = {
     val xa = databaseConfig.getTransactor
 
-    val create = sql"""CREATE TABLE IF NOT EXISTS games (
-      id SERIAL NOT NULL PRIMARY KEY, 
-      username VARCHAR(225) NOT NULL, 
-      savedgame TEXT, 
-      name VARCHAR(255))""".update.run
+    val create = sql"""create table if not exists games (
+      id serial not null primary key, 
+      username varchar(225) not null, 
+      savedgame text, 
+      name varchar(255) unique)""".update.run
 
-    def insert(saveGame: SaveGame, username: String) =
-      sql"insert into games (username, savedgame, name) values ( $username, ${Json.stringify(
-        Json.toJson(saveGame))}, ${saveGame.name})".update.run
+    def insert(saveGame: SaveGame, username: String) = {
+      val jsonGame = Json.stringify(Json.toJson(saveGame))
+      sql"""insert into games (username, savedgame, name) 
+           values ( $username, $jsonGame, ${saveGame.name}) 
+           on conflict (name) do update set savedgame = $jsonGame""".update.run
+    }
 
     (create, insert(saveGame, username)).mapN(_ + _).transact(xa).unsafeRunSync()
 
