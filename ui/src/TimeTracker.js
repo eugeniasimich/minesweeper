@@ -1,27 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-
-export const TimeTracker = ({ startDate, finished }) => {
-  const [currentTime, setCurrentTime] = useState(startDate);
-
+export const TimeTracker = ({ seconds, setSeconds, finished }) => {
   useEffect(() => {
     let secTimer = setInterval(() => {
-      setCurrentTime(new Date().toLocaleString());
+      setSeconds(seconds + 1);
     }, 1000);
 
     return () => clearInterval(secTimer);
-  }, []);
+  }, [seconds, setSeconds]);
 
-  const time = () => {
-    const date1 = new Date(startDate);
-    const date2 = new Date(currentTime);
-    return (date2 - date1) / 1000;
-  };
-
-  return !finished && <h2>Seconds: {time()}</h2>;
+  return !finished && <h2>Seconds: {seconds}</h2>;
 };
 
 TimeTracker.propTypes = {
-  startDate: PropTypes.instanceOf(Date),
+  seconds: PropTypes.number,
+  setSeconds: PropTypes.func,
   finished: PropTypes.bool,
 };

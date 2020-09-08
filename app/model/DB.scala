@@ -47,10 +47,10 @@ class DB(url: String) {
       url
     )
 
-    val r: List[String] = sql"select name from games where username = $username"
+    val r: List[String] = sql"select name from games where username = $username order by id desc"
       .query[String]
       .stream
-      .take(5)
+      .take(10)
       .compile
       .toList
       .transact(xa)

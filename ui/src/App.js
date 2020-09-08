@@ -4,45 +4,9 @@ import { cellHasFlag } from "./flagUtils";
 import { Menu } from "./Menu";
 import { TimeTracker } from "./TimeTracker";
 import "./App.css";
+import Client from "./Client";
 const App = () => {
-  useEffect(() => {
-    return fetch(`/token`, {
-      accept: "application/json",
-    })
-      .then((r) => {
-        return r.json();
-      })
-      .then((j) => setCsrfToken(j));
-  }, []);
-
-  const getGame = (x, y, n) => {
-    setFlags([]);
-    setStartDate(new Date().toLocaleString());
-    return fetch(`/api/newGame/${x}/${y}/${n}`, {
-      accept: "application/json",
-    })
-      .then((r) => {
-        return r.json();
-      })
-      .then((j) => setGame(j));
-  };
-
-  const requestOpenCell = (i, j) => {
-    const requestOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        accept: "application/json",
-        "Csrf-Token": csrfToken,
-      },
-      body: JSON.stringify({ g: game, i: i, j: j }),
-    };
-    return fetch("/api/openCell", requestOptions)
-      .then((r) => r.json())
-      .then((j) => {
-        setGame(j);
-      });
-  };
+  useEffect(() => Client.getCSRFToken(setCsrfToken), []);
 
   const flagCell = (event, row, col) => {
     event.preventDefault();
@@ -51,49 +15,38 @@ const App = () => {
     else setFlags(flags.filter((p) => !(p.row === row && p.col === col)));
   };
 
-  const requestSaveGame = (game, flags, seconds) => {
-    return (name) => {
-      const requestOptions = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          accept: "application/json",
-          "Csrf-Token": csrfToken,
-        },
-        body: JSON.stringify({
-          g: game,
-          flags: flags,
-          seconds: 34,
-          name: name,
-        }),
-      };
-      return fetch("/api/saveGame", requestOptions);
-    };
-  };
-
   const restoreGame = (savedGame) => {
-    savedGame && setStartDate(new Date().toLocaleString());
+    console.log(savedGame.seconds);
+    savedGame && setSeconds(savedGame.seconds);
     savedGame && setFlags(savedGame.flags);
     savedGame && setGame(savedGame.g);
     //TODO set name so it can be overwritten
   };
   const [flags, setFlags] = useState([]);
   const [game, setGame] = useState();
-  const [startDate, setStartDate] = useState();
+  const [seconds, setSeconds] = useState(0);
   const [csrfToken, setCsrfToken] = useState();
   return (
     <div className="App">
       <h1>Welcome to Minesweeper!</h1>
       <Menu
-        onNewGame={getGame}
-        onSaveGame={requestSaveGame(game, flags, 1)}
+        onNewGame={(nRows, nCols, nMines) =>
+          Client.getNewGame(nRows, nCols, nMines, (game) => {
+            setGame(game);
+            setFlags([]);
+            setSeconds(0);
+          })
+        }
+        onSaveGame={Client.saveGame(game, flags, seconds, csrfToken)}
         showSave={game && !game.hasWon && !game.hasLost}
         onResumeGameSelection={restoreGame}
       />
       {game && (
         <Grid
           onCellRightClick={flagCell}
-          onCellClick={(i, j) => requestOpenCell(i, j)}
+          onCellClick={(i, j) =>
+            Client.openCell(i, j, game, csrfToken, setGame)
+          }
           gridData={game.data}
           flags={flags}
         />
@@ -103,7 +56,8 @@ const App = () => {
 
       {game && (
         <TimeTracker
-          startDate={startDate}
+          seconds={seconds}
+          setSeconds={setSeconds}
           finished={game.hasWon || game.hasLost}
         ></TimeTracker>
       )}

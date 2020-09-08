@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useEffect } from "react";
+import React, { useState, Fragment } from "react";
 import PropTypes from "prop-types";
 import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
@@ -6,33 +6,14 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Dialog from "@material-ui/core/Dialog";
-
+import Client from "./Client";
 export const ResumeGameDialog = ({ onResumeGameSelection }) => {
-  const getSavedGames = () => {
-    return fetch("/api/savedGames", {
-      accept: "application/json",
-    }).then((r) => {
-      return r.json();
-    });
-  };
-
-  const getGame = (name) => {
-    return fetch(`/api/resumeGame/${name}`, {
-      accept: "application/json",
-    }).then((r) => {
-      return r.json();
-    });
-  };
-
-  useEffect(() => {
-    getSavedGames().then((r) => setOptions(r));
-  }, []);
-
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState([]);
 
   const handleClickOpen = () => {
     setOpen(true);
+    Client.getSavedGamesList(setOptions);
   };
 
   const handleClose = () => {
@@ -41,7 +22,7 @@ export const ResumeGameDialog = ({ onResumeGameSelection }) => {
 
   const handleListItemClick = (value) => {
     setOpen(false);
-    getGame(value).then(onResumeGameSelection);
+    Client.getSavedGame(value, onResumeGameSelection);
   };
 
   return (
