@@ -11,7 +11,8 @@ import models.UserModel.User
 import play.api.Configuration
 @Singleton
 class PersistenceController @Inject()(cc: ControllerComponents, config: Configuration)
-    extends AbstractController(cc) {
+    extends AbstractController(cc)
+    with AuthenticatedAction {
 
   val postgresConfig = PostgresConfig(config.get[String]("db.default.url"))
   val gameDAO = new GameDAO(postgresConfig)
@@ -42,23 +43,4 @@ class PersistenceController @Inject()(cc: ControllerComponents, config: Configur
     }
   }
 
-  private def withUserParseBody[A](bodyParser: BodyParser[A])(
-      block: User => Request[A] => Result): EssentialAction = {
-    Security.WithAuthentication(extractUser)(user =>
-      Action(bodyParser) { request =>
-        block(user)(request)
-    })
-  }
-  private def withUser[A](block: User => Result): EssentialAction = {
-    Security.WithAuthentication(extractUser)(user => Action { block(user) })
-  }
-
-  private def extractUser(req: RequestHeader): Option[User] = {
-    val sessionTokenOpt = req.cookies.get("session-login")
-    sessionTokenOpt
-      .flatMap(cookie => SessionDAO.getSession(cookie.value))
-      .filter(_.expires.isAfter(LocalDateTime.now()))
-      .map(_.username)
-      .flatMap(userDAO.getUser)
-  }
 }
