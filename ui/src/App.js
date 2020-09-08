@@ -20,7 +20,6 @@ const App = () => {
   };
 
   const restoreGame = (savedGame) => {
-    console.log(savedGame.seconds);
     savedGame && setSeconds(savedGame.seconds);
     savedGame && setFlags(savedGame.flags);
     savedGame && setGame(savedGame.g);
@@ -30,6 +29,7 @@ const App = () => {
   const [game, setGame] = useState();
   const [seconds, setSeconds] = useState(0);
   const [csrfToken, setCsrfToken] = useState();
+  const [username, setUsername] = useState();
 
   const GamePage = (isAuthMode) => {
     return (
@@ -73,13 +73,13 @@ const App = () => {
 
   return (
     <div className="App">
-      <h1>Welcome to Minesweeper!</h1>
+      <h1>{"Welcome to Minesweeper " + username + "!"}</h1>
       <Router>
         <div>
           <Switch>
             <Route path="/public">{GamePage(false)}</Route>
             <Route path="/login">
-              <Login csrfToken={csrfToken} />
+              <Login csrfToken={csrfToken} setUsername={setUsername} />
             </Route>
             <PrivateRoute path="/">{GamePage(true)}</PrivateRoute>
           </Switch>

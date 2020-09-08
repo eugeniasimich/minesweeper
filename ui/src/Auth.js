@@ -34,8 +34,8 @@ const loginOrSignup = (
     .then((json) => {
       if (json.message) return onErrorCB(json.message);
       else {
-        Cookies.set("session-login", json);
-        cb();
+        Cookies.set("session-login", json.token);
+        cb(json);
       }
     });
 };

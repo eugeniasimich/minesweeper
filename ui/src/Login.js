@@ -20,13 +20,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Login = ({ csrfToken }) => {
+const Login = ({ csrfToken, setUsername }) => {
   const classes = useStyles();
-  const [username, setUsername] = useState();
-  const [password, setPassword] = useState();
+  const [username, _setUsername] = useState();
+  const [password, _setPassword] = useState();
   const [errorMess, setErrorMess] = useState();
   const history = useHistory();
-  const onFinish = () => {
+  const onFinish = (session) => {
+    setUsername(session.username);
     let { from } = { from: { pathname: "/" } };
     history.replace(from);
   };
@@ -48,7 +49,7 @@ const Login = ({ csrfToken }) => {
             <TextField
               variant="outlined"
               label="Username"
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => _setUsername(e.target.value)}
             />
             {errorMess && <p>{errorMess}</p>}
           </div>
@@ -58,7 +59,7 @@ const Login = ({ csrfToken }) => {
             variant="outlined"
             type="password"
             label="Password"
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => _setPassword(e.target.value)}
           />
         </Grid>
         <Grid item xs={12} className={classes.items}>
@@ -98,6 +99,7 @@ const Login = ({ csrfToken }) => {
 
 Login.propTypes = {
   csrfToken: PropTypes.string,
+  setUsername: PropTypes.func,
 };
 
 export default Login;
