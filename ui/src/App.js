@@ -6,12 +6,9 @@ import { TimeTracker } from "./TimeTracker";
 import "./App.css";
 import Client from "./Client";
 import Login from "./Login";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import PrivateRoute from "./PrivateRoute";
+import Auth from "./Auth";
 
 const App = () => {
   useEffect(() => Client.getCSRFToken(setCsrfToken), []);
@@ -75,38 +72,6 @@ const App = () => {
     );
   };
 
-  const fakeAuth = {
-    isAuthenticated: false,
-    authenticate(cb) {
-      fakeAuth.isAuthenticated = true;
-      setTimeout(cb, 100); // fake async
-    },
-    signout(cb) {
-      fakeAuth.isAuthenticated = false;
-      setTimeout(cb, 100);
-    },
-  };
-
-  const PrivateRoute = ({ children, ...rest }) => {
-    return (
-      <Route
-        {...rest}
-        render={({ location }) =>
-          fakeAuth.isAuthenticated ? (
-            children
-          ) : (
-            <Redirect
-              to={{
-                pathname: "/login",
-                state: { from: location },
-              }}
-            />
-          )
-        }
-      />
-    );
-  };
-
   return (
     <div className="App">
       <h1>Welcome to Minesweeper!</h1>
@@ -115,7 +80,7 @@ const App = () => {
           <Switch>
             <Route path="/public">{GamePage(false)}</Route>
             <Route path="/login">
-              <Login setAuth={fakeAuth.authenticate} />
+              <Login setAuth={Auth.authenticate} />
             </Route>
             <PrivateRoute path="/">{GamePage(true)}</PrivateRoute>
           </Switch>
