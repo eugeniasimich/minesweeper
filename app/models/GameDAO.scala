@@ -1,4 +1,4 @@
-package model
+package models
 
 import doobie._
 import doobie.implicits._
@@ -6,10 +6,10 @@ import cats.effect.IO
 
 import cats.implicits._
 import doobie.util.ExecutionContexts
-import model.GameModel._
+import models.GameModel._
 import play.api.libs.json.Json
 
-class DB(url: String) {
+class GameDAO(databaseConfig: DatabaseConfig) {
   implicit val cs = IO.contextShift(ExecutionContexts.synchronous)
   case class DBGame(username: String, savedgame: String, name: String) {
     def toSaveGame: Option[SaveGame] = {
@@ -18,10 +18,7 @@ class DB(url: String) {
   }
 
   def saveGame(saveGame: SaveGame, username: String): Int = {
-    val xa = Transactor.fromDriverManager[IO](
-      "org.postgresql.Driver",
-      url
-    )
+    val xa = databaseConfig.getTransactor
 
     val create = sql"""CREATE TABLE IF NOT EXISTS games (
       id SERIAL NOT NULL PRIMARY KEY, 
@@ -38,10 +35,7 @@ class DB(url: String) {
   }
 
   def listOfGames(username: String): List[String] = {
-    val xa = Transactor.fromDriverManager[IO](
-      "org.postgresql.Driver",
-      url
-    )
+    val xa = databaseConfig.getTransactor
 
     val list: List[String] = sql"select name from games where username = $username order by id desc"
       .query[String]
@@ -54,11 +48,8 @@ class DB(url: String) {
     list
   }
 
-  def resumeGame(name: String, username: String): Option[SaveGame] = {
-    val xa = Transactor.fromDriverManager[IO](
-      "org.postgresql.Driver",
-      url
-    )
+  def getGame(name: String, username: String): Option[SaveGame] = {
+    val xa = databaseConfig.getTransactor
 
     val stringResult: Option[String] =
       sql"""select savedgame from games where name = $name and username = $username"""

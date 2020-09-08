@@ -3,7 +3,7 @@ package controllers
 import javax.inject._
 import play.api.mvc._
 import play.api.libs.json.{JsError, Json}
-import model.GameModel._
+import models.GameModel._
 
 @Singleton
 class GameController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {

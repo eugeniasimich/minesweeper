@@ -1,6 +1,6 @@
 package controllers
 
-import model.GameModel.Game
+import models.GameModel.Game
 import org.scalacheck.{Gen, Shrink}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.{BeforeAndAfterAll, FlatSpec, Matchers}

@@ -1,6 +1,6 @@
 package controllers
 
-import model.GameModel.{Cell, Game}
+import models.GameModel.{Cell, Game}
 import utils.RandomUtil.randomSetOfPositions
 object GameManager {
 

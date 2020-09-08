@@ -1,6 +1,6 @@
 package controllers
 
-import model.GameModel.{Game, GameAction}
+import models.GameModel.{Game, GameAction}
 import org.scalatest.Inside
 import org.scalatestplus.play._
 import org.scalatestplus.play.guice._
