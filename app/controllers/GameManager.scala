@@ -18,6 +18,11 @@ object GameManager {
     g.data(row)(col) = g.data(row)(col).setValue(value)
   }
 
+  private def fillSurroundingCellsWithMineNumber(g: Game, row: Int, col: Int) = {
+    val indexes = calculateSurroundingIndexes(row, col, g.nRows, g.nCols)
+    indexes.foreach { case (i, j) => calculateSurroundingMines(g, i, j) }
+  }
+
   private def openSurroundingMines(game: Game, row: Int, col: Int): Unit = {
     val cell = game.data(row)(col)
     if (!cell.isOpen) {
@@ -47,9 +52,7 @@ object GameManager {
     val game = Game(Array.fill(nRows)(Array.fill(nCols)(Cell.empty)), nRows, nCols, nMines)
     val mines: Set[(Int, Int)] = randomSetOfPositions(nRows, nCols, nMines)
     mines.foreach { case (i, j) => game.updateCell(i, j, _.putMine) }
-    for (i <- 0 until nRows; j <- 0 until nCols) {
-      calculateSurroundingMines(game, i, j)
-    }
+    mines.foreach { case (i, j) => fillSurroundingCellsWithMineNumber(game, i, j) }
     game
   }
 
