@@ -10,6 +10,9 @@ GET     /token                      controllers.CSRFController.getToken()
 GET     /api/newGame/:x/:y/:n       controllers.GameController.newGame(x : Int, y: Int, n: Int)
 POST    /api/openCell               controllers.GameController.openCell()
 
+POST    /api/signup                 controllers.LoginController.signup()
+POST    /api/login                  controllers.LoginController.login()
+
 POST    /api/saveGame               controllers.PersistenceController.saveGame()
 GET     /api/savedGames             controllers.PersistenceController.savedGames()
 GET     /api/resumeGame/:name       controllers.PersistenceController.resumeGame(name: String)

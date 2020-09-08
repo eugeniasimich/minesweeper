@@ -2,13 +2,23 @@ package models
 import doobie._
 import doobie.implicits._
 import cats.effect.IO
-
 import cats.implicits._
 import doobie.util.ExecutionContexts
+import play.api.libs.json.Json
 
-case class User(username: String, password: String)
+object UserModel {
+
+  case class User(username: String, password: String)
+  implicit val fmtUser = Json.format[User]
+
+  def checkUsernamePassword(input: User, fromDB: Option[User]): Boolean = {
+    fromDB.exists(_.password == input.password)
+  }
+}
 
 class UserDAO(databaseConfig: DatabaseConfig) {
+  import UserModel._
+
   implicit val cs = IO.contextShift(ExecutionContexts.synchronous)
 
   object Queries {
