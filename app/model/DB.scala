@@ -3,18 +3,14 @@ package model
 import doobie._
 import doobie.implicits._
 import cats.effect.IO
-import cats._
-import cats.effect._
-import cats.data._
+
 import cats.implicits._
 import doobie.util.ExecutionContexts
 import model.GameModel._
 import play.api.libs.json.Json
-import fs2.Stream
 
 class DB(url: String) {
   implicit val cs = IO.contextShift(ExecutionContexts.synchronous)
-
   case class DBGame(username: String, savedgame: String, name: String) {
     def toSaveGame: Option[SaveGame] = {
       Json.toJson(savedgame).validate[SaveGame].fold[Option[SaveGame]](_ => None, Some(_))
@@ -47,7 +43,7 @@ class DB(url: String) {
       url
     )
 
-    val r: List[String] = sql"select name from games where username = $username order by id desc"
+    val list: List[String] = sql"select name from games where username = $username order by id desc"
       .query[String]
       .stream
       .take(10)
@@ -55,7 +51,7 @@ class DB(url: String) {
       .toList
       .transact(xa)
       .unsafeRunSync()
-    r
+    list
   }
 
   def resumeGame(name: String, username: String): Option[SaveGame] = {
