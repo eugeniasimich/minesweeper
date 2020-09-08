@@ -4,7 +4,8 @@ import TextField from "@material-ui/core/TextField";
 import PropTypes from "prop-types";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
-import { useHistory, useLocation, Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import Auth from "./Auth";
 
 const useStyles = makeStyles((theme) => ({
   buttons: {
@@ -19,20 +20,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Login = ({ setAuth }) => {
+const Login = ({ csrfToken }) => {
   const classes = useStyles();
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
-  let history = useHistory();
-  let location = useLocation();
-
-  let { from } = location.state || { from: { pathname: "/" } };
-
-  const handleLogin = () =>
-    setAuth(() => {
-      history.replace(from);
-    });
-  const handleSignup = () => alert(password + " " + username);
+  const [errorMess, setErrorMess] = useState();
+  const history = useHistory();
+  const onFinish = () => {
+    let { from } = { from: { pathname: "/" } };
+    history.replace(from);
+  };
+  const handleLogin = () => {
+    return Auth.login(username, password, csrfToken, setErrorMess, onFinish);
+  };
+  const handleSignup = () => {
+    return Auth.signup(username, password, csrfToken, setErrorMess, onFinish);
+  };
 
   return (
     <div className="Login">
@@ -41,11 +44,14 @@ const Login = ({ setAuth }) => {
           <h1>Login</h1>
         </Grid>
         <Grid item xs={12} className={classes.items}>
-          <TextField
-            variant="outlined"
-            label="Username"
-            onChange={(e) => setUsername(e.target.value)}
-          />
+          <div>
+            <TextField
+              variant="outlined"
+              label="Username"
+              onChange={(e) => setUsername(e.target.value)}
+            />
+            {errorMess && <p>{errorMess}</p>}
+          </div>
         </Grid>
         <Grid item xs={12} className={classes.items}>
           <TextField
@@ -91,7 +97,7 @@ const Login = ({ setAuth }) => {
 };
 
 Login.propTypes = {
-  setAuth: PropTypes.func,
+  csrfToken: PropTypes.string,
 };
 
 export default Login;

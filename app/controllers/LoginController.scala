@@ -37,7 +37,7 @@ class LoginController @Inject()(cc: ControllerComponents, config: Configuration)
       },
       user => {
         checkUsernamePassword(user, userDAO.getUser(user.username)) match {
-          case false => Unauthorized(Json.obj("message" -> JsString("Wrong username or pass")))
+          case false => Forbidden(Json.obj("message" -> JsString("Wrong username or pass")))
           case true => {
             val s = SessionDAO.sessionForUser(user.username)
             Ok(Json.toJson(s))
@@ -57,7 +57,7 @@ class LoginController @Inject()(cc: ControllerComponents, config: Configuration)
       user => {
         val maybeUser: Option[User] = userDAO.addUser(user.username: String, user.password: String)
         maybeUser match {
-          case None => Forbidden(Json.obj("message" -> JsString("Username alrady taken")))
+          case None => Forbidden(Json.obj("message" -> JsString("Username already taken")))
           case Some(user) => {
             val s = SessionDAO.sessionForUser(user.username)
             Ok(Json.toJson(s))

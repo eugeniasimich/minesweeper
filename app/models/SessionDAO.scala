@@ -13,6 +13,7 @@ object SessionDAO {
 
   implicit val fmtSession = Json.format[Session]
 
+  //in memory session for simplicity
   private val sessions = MMap.empty[String, Session]
 
   def getSession(token: String): Option[Session] = {

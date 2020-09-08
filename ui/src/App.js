@@ -8,7 +8,6 @@ import Client from "./Client";
 import Login from "./Login";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
-import Auth from "./Auth";
 
 const App = () => {
   useEffect(() => Client.getCSRFToken(setCsrfToken), []);
@@ -80,7 +79,7 @@ const App = () => {
           <Switch>
             <Route path="/public">{GamePage(false)}</Route>
             <Route path="/login">
-              <Login setAuth={Auth.authenticate} />
+              <Login csrfToken={csrfToken} />
             </Route>
             <PrivateRoute path="/">{GamePage(true)}</PrivateRoute>
           </Switch>
