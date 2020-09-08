@@ -5,6 +5,7 @@ import Button from "@material-ui/core/Button";
 import SaveGameDialog from "./SaveGameDialog";
 import ResumeGameDialog from "./ResumeGameDialog";
 export const Menu = ({
+  isAuthMode,
   onNewGame,
   onSaveGame,
   showSave,
@@ -44,18 +45,21 @@ export const Menu = ({
       >
         Create New Game
       </Button>
-      {showSave && (
+      {isAuthMode && showSave && (
         <SaveGameDialog onConfirm={onSaveGame}>Save Game</SaveGameDialog>
       )}
-      <ResumeGameDialog
-        onResumeGameSelection={onResumeGameSelection}
-        getResumeGameOptions={getResumeGameOptions}
-      />
+      {isAuthMode && (
+        <ResumeGameDialog
+          onResumeGameSelection={onResumeGameSelection}
+          getResumeGameOptions={getResumeGameOptions}
+        />
+      )}
     </div>
   );
 };
 
 Menu.propTypes = {
+  isAuthMode: PropTypes.bool,
   onNewGame: PropTypes.func,
   onSaveGame: PropTypes.func,
   showSave: PropTypes.bool,

@@ -4,6 +4,7 @@ import TextField from "@material-ui/core/TextField";
 import PropTypes from "prop-types";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
+import { useHistory, useLocation, Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   buttons: {
@@ -18,12 +19,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Login = (setAuth) => {
+const Login = ({ setAuth }) => {
   const classes = useStyles();
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
+  let history = useHistory();
+  let location = useLocation();
 
-  const handleLogin = () => alert(username + " " + password);
+  let { from } = location.state || { from: { pathname: "/" } };
+
+  const handleLogin = () =>
+    setAuth(() => {
+      history.replace(from);
+    });
   const handleSignup = () => alert(password + " " + username);
 
   return (
@@ -52,7 +60,6 @@ const Login = (setAuth) => {
             <Button
               variant="outlined"
               color="primary"
-              label="Login"
               onClick={(event) => handleLogin(event)}
             >
               Login
@@ -60,10 +67,21 @@ const Login = (setAuth) => {
             <Button
               variant="outlined"
               color="primary"
-              label="SignUp"
               onClick={(event) => handleSignup(event)}
             >
               Signup
+            </Button>
+          </div>
+        </Grid>
+        <Grid item xs={12} className={classes.items}>
+          <div className={classes.buttons}>
+            <Button
+              variant="outlined"
+              color="primary"
+              component={Link}
+              to={"/public"}
+            >
+              Play incognito
             </Button>
           </div>
         </Grid>
