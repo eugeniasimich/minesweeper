@@ -18,6 +18,9 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     color: theme.palette.text.secondary,
   },
+  error: {
+    color: "red",
+  },
 }));
 
 const Login = ({ csrfToken }) => {
@@ -31,10 +34,22 @@ const Login = ({ csrfToken }) => {
     history.replace(from);
   };
   const handleLogin = () => {
-    return Auth.login(username, password, csrfToken, setErrorMess, onFinish);
+    return (
+      ensureNotEmpty() &&
+      Auth.login(username, password, csrfToken, setErrorMess, onFinish)
+    );
   };
   const handleSignup = () => {
-    return Auth.signup(username, password, csrfToken, setErrorMess, onFinish);
+    return (
+      ensureNotEmpty() &&
+      Auth.signup(username, password, csrfToken, setErrorMess, onFinish)
+    );
+  };
+
+  const ensureNotEmpty = () => {
+    if (!username || !password)
+      setErrorMess("Username and Password must not be empty");
+    return username && password;
   };
 
   return (
@@ -44,22 +59,22 @@ const Login = ({ csrfToken }) => {
           <h1>Login or Signup</h1>
         </Grid>
         <Grid item xs={12} className={classes.items}>
+          <TextField
+            variant="outlined"
+            label="Username"
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12} className={classes.items}>
           <div>
             <TextField
               variant="outlined"
-              label="Username"
-              onChange={(e) => setUsername(e.target.value)}
+              type="password"
+              label="Password"
+              onChange={(e) => setPassword(e.target.value)}
             />
-            {errorMess && <p>{errorMess}</p>}
+            {errorMess && <p className={classes.error}>{errorMess}</p>}
           </div>
-        </Grid>
-        <Grid item xs={12} className={classes.items}>
-          <TextField
-            variant="outlined"
-            type="password"
-            label="Password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
         </Grid>
         <Grid item xs={12} className={classes.items}>
           <div className={classes.buttons}>
