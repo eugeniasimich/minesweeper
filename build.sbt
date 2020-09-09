@@ -9,6 +9,7 @@ scalaVersion := "2.13.3"
 
 libraryDependencies += guice
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0" % Test
+libraryDependencies += specs2 % Test
 libraryDependencies += jdbc
 libraryDependencies ++= Seq("org.postgresql" % "postgresql" % "9.3-1102-jdbc41")
 libraryDependencies += "org.scalacheck" %% "scalacheck" % "1.14.1" % "test"

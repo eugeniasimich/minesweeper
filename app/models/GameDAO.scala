@@ -15,13 +15,13 @@ class GameDAO(databaseConfig: DatabaseConfig) {
       id serial not null primary key, 
       username varchar(225) not null, 
       savedgame text, 
-      name varchar(255) unique)""".update.run
+      name varchar(255) unique not null)""".update
 
     def insert(saveGame: SaveGame, username: String) = {
       val jsonGame = Json.stringify(Json.toJson(saveGame))
       sql"""insert into games (username, savedgame, name) 
            values ( $username, $jsonGame, ${saveGame.name}) 
-           on conflict (name) do update set savedgame = $jsonGame""".update.run
+           on conflict (name) do update set savedgame = $jsonGame""".update
     }
 
     def list(username: String) =
@@ -41,13 +41,13 @@ class GameDAO(databaseConfig: DatabaseConfig) {
 
   def saveGame(saveGame: SaveGame, username: String): Int = {
     val xa = databaseConfig.getTransactor
-    (create, insert(saveGame, username)).mapN(_ + _).transact(xa).unsafeRunSync()
+    (create.run, insert(saveGame, username).run).mapN(_ + _).transact(xa).unsafeRunSync()
   }
 
   def listOfGames(username: String): List[String] = {
     val xa = databaseConfig.getTransactor
     val z = for {
-      _ <- create
+      _ <- create.run
       a <- list(username).stream.take(10).compile.toList
     } yield a
     z.transact(xa).unsafeRunSync()
