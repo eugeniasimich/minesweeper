@@ -29,7 +29,6 @@ const App = () => {
   const [game, setGame] = useState();
   const [seconds, setSeconds] = useState(0);
   const [csrfToken, setCsrfToken] = useState();
-  const [username, setUsername] = useState();
 
   const GamePage = (isAuthMode) => {
     return (
@@ -46,7 +45,6 @@ const App = () => {
           onSaveGame={Client.saveGame(game, flags, seconds, csrfToken)}
           showSave={game && !game.hasWon && !game.hasLost}
           onResumeGameSelection={restoreGame}
-          username={username}
         />
         {game && (
           <Grid
@@ -80,7 +78,7 @@ const App = () => {
           <Switch>
             <Route path="/public">{GamePage(false)}</Route>
             <Route path="/login">
-              <Login csrfToken={csrfToken} setUsername={setUsername} />
+              <Login csrfToken={csrfToken} />
             </Route>
             <PrivateRoute path="/">{GamePage(true)}</PrivateRoute>
           </Switch>

@@ -1,4 +1,4 @@
-import Cookies from "js-cookie";
+import SessionCookie from "./SessionCookie";
 
 const loginOrSignup = (
   username,
@@ -34,14 +34,14 @@ const loginOrSignup = (
     .then((json) => {
       if (json.message) return onErrorCB(json.message);
       else {
-        Cookies.set("session-login", json.token);
+        SessionCookie.set(json.token);
         cb(json);
       }
     });
 };
 
 const isAuthenticated = () => {
-  return Cookies.get("session-login");
+  return SessionCookie.get();
 };
 
 const login = (username, password, csrfToken, onErrorCB, cb) => {
@@ -57,7 +57,7 @@ const parseJSON = (response) => {
 };
 
 const signout = () => {
-  Cookies.remove("session-login");
+  SessionCookie.remove();
 };
 
 const Auth = {

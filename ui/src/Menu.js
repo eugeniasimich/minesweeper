@@ -6,6 +6,7 @@ import SaveGameDialog from "./SaveGameDialog";
 import ResumeGameDialog from "./ResumeGameDialog";
 import Auth from "./Auth";
 import { useHistory } from "react-router-dom";
+import SessionCookie from "./SessionCookie";
 export const Menu = ({
   isAuthMode,
   onNewGame,
@@ -13,12 +14,15 @@ export const Menu = ({
   showSave,
   getResumeGameOptions,
   onResumeGameSelection,
-  username,
 }) => {
   const [rows, setRows] = useState(10);
   const [cols, setCols] = useState(15);
   const [mines, setMines] = useState(10);
   const history = useHistory();
+
+  const getUsername = () => {
+    return SessionCookie.get().split("-")[0];
+  };
   return (
     <div>
       <TextField
@@ -57,19 +61,21 @@ export const Menu = ({
           getResumeGameOptions={getResumeGameOptions}
         />
       )}
-      {isAuthMode && (
-        <Button
-          variant="outlined"
-          color="primary"
-          onClick={() => {
-            Auth.signout();
-            let { from } = { from: { pathname: "/" } };
-            return history.replace(from);
-          }}
-        >
-          {"Sign Out, " + username}
-        </Button>
-      )}
+      <Button
+        variant="outlined"
+        color="primary"
+        onClick={() => {
+          Auth.signout();
+          let { from } = { from: { pathname: "/" } };
+          return history.replace(from);
+        }}
+      >
+        {!isAuthMode
+          ? "Log in"
+          : getUsername()
+          ? "Sign out, " + getUsername()
+          : "Sign out"}
+      </Button>
     </div>
   );
 };
@@ -80,5 +86,4 @@ Menu.propTypes = {
   onSaveGame: PropTypes.func,
   showSave: PropTypes.bool,
   onResumeGameSelection: PropTypes.func,
-  username: PropTypes.string,
 };
