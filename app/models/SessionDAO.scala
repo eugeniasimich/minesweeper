@@ -5,7 +5,7 @@ import java.util.UUID
 
 import play.api.libs.json.Json
 
-import scala.collection.mutable.{Map => MMap}
+import java.util.concurrent.{ConcurrentHashMap => MMap}
 
 object SessionDAO {
 
@@ -14,10 +14,13 @@ object SessionDAO {
   implicit val fmtSession = Json.format[Session]
 
   //in memory session for simplicity
-  private val sessions = MMap.empty[String, Session]
+  private val sessions: MMap[String, Session] = new MMap
 
   def getSession(token: String): Option[Session] = {
-    sessions.get(token)
+    if (sessions.containsKey(token))
+      Some(sessions.get(token))
+    else
+      None
   }
 
   def sessionForUser(username: String): Session = {
