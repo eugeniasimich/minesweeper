@@ -28,22 +28,27 @@ const Login = ({ csrfToken }) => {
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
   const [errorMess, setErrorMess] = useState();
+  const [disableButtons, setDisableButtons] = useState(false);
   const history = useHistory();
   const onFinish = (session) => {
     let { from } = { from: { pathname: "/" } };
     history.replace(from);
   };
+  const onError = (e) => {
+    setErrorMess(e);
+    return setDisableButtons(false);
+  };
   const handleLogin = () => {
-    return (
-      ensureNotEmpty() &&
-      Auth.login(username, password, csrfToken, setErrorMess, onFinish)
-    );
+    if (ensureNotEmpty()) {
+      setDisableButtons(true);
+      return Auth.login(username, password, csrfToken, onError, onFinish);
+    }
   };
   const handleSignup = () => {
-    return (
-      ensureNotEmpty() &&
-      Auth.signup(username, password, csrfToken, setErrorMess, onFinish)
-    );
+    if (ensureNotEmpty()) {
+      setDisableButtons(true);
+      return Auth.signup(username, password, csrfToken, onError, onFinish);
+    }
   };
 
   const ensureNotEmpty = () => {
@@ -81,14 +86,16 @@ const Login = ({ csrfToken }) => {
             <Button
               variant="outlined"
               color="primary"
-              onClick={(event) => handleLogin(event)}
+              disabled={disableButtons}
+              onClick={handleLogin}
             >
               Login
             </Button>
             <Button
               variant="outlined"
               color="primary"
-              onClick={(event) => handleSignup(event)}
+              disabled={disableButtons}
+              onClick={handleSignup}
             >
               Signup
             </Button>
@@ -100,6 +107,7 @@ const Login = ({ csrfToken }) => {
               variant="outlined"
               color="primary"
               component={Link}
+              disabled={disableButtons}
               to={"/public"}
             >
               Play incognito
