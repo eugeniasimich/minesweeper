@@ -75,6 +75,7 @@ export const Menu = ({
         variant="outlined"
         color="primary"
         onClick={() => {
+          onResumeGameSelection({ g: undefined, seconds: 0, flags: [] });
           Auth.signout();
           let { from } = { from: { pathname: "/" } };
           return history.replace(from);
