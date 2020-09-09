@@ -22,12 +22,12 @@ class UserDAO(databaseConfig: DatabaseConfig) {
   implicit val cs = IO.contextShift(ExecutionContexts.synchronous)
 
   object Queries {
-    val create = sql"""CREATE TABLE IF NOT EXISTS users (
-      username VARCHAR(225) NOT NULL PRIMARY KEY, 
-      password VARCHAR(255))""".update.run
+    val create = sql"""create table if not exists users (
+      username varchar(225) not null primary key, 
+      password varchar(255) not null)""".update
 
     def insert(user: User) =
-      sql"insert into users (username, password) values ( ${user.username}, ${user.password})".update.run
+      sql"insert into users (username, password) values ( ${user.username}, ${user.password})".update
 
     def getByUserName(username: String) =
       sql"""select password from users where username = $username"""
@@ -38,17 +38,21 @@ class UserDAO(databaseConfig: DatabaseConfig) {
 
   def getUser(username: String): Option[User] = {
     val xa = databaseConfig.getTransactor
-    getByUserName(username).option.transact(xa).unsafeRunSync().map(User(username, _))
+    val resultDescription = for {
+      _ <- create.run
+      a <- getByUserName(username).option
+    } yield a
+    resultDescription.transact(xa).unsafeRunSync().map(User(username, _))
   }
 
   def addUser(username: String, password: String): Option[User] = { //TODO encrypt
     val xa = databaseConfig.getTransactor
-    create.transact(xa).unsafeRunSync()
+    create.run.transact(xa).unsafeRunSync()
     if (getUser(username).nonEmpty) {
       None
     } else {
       val user = User(username, password)
-      if (insert(user).transact(xa).unsafeRunSync() == 1)
+      if (insert(user).run.transact(xa).unsafeRunSync() == 1)
         Some(user)
       else None
     }
