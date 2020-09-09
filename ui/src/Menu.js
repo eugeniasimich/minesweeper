@@ -7,6 +7,15 @@ import ResumeGameDialog from "./ResumeGameDialog";
 import Auth from "./Auth";
 import { useHistory } from "react-router-dom";
 import SessionCookie from "./SessionCookie";
+import { makeStyles } from "@material-ui/core/styles";
+const useStyles = makeStyles((theme) => ({
+  items: {
+    "& > *": {
+      margin: theme.spacing(1),
+    },
+  },
+}));
+
 export const Menu = ({
   isAuthMode,
   onNewGame,
@@ -19,12 +28,13 @@ export const Menu = ({
   const [cols, setCols] = useState(15);
   const [mines, setMines] = useState(10);
   const history = useHistory();
+  const classes = useStyles();
 
   const getUsername = () => {
     return SessionCookie.get().split("-")[0];
   };
   return (
-    <div>
+    <div className={classes.items}>
       <TextField
         type="number"
         label="Rows"
