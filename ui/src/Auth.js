@@ -1,13 +1,6 @@
 import SessionCookie from "./SessionCookie";
 
-const loginOrSignup = (
-  username,
-  password,
-  csrfToken,
-  onErrorCB,
-  cb,
-  isLogin
-) => {
+const loginOrSignup = (username, password, csrfToken, onError, cb, isLogin) => {
   const requestOptions = {
     method: "POST",
     headers: {
@@ -32,9 +25,9 @@ const loginOrSignup = (
     })
     .then(parseJSON)
     .then((json) => {
-      if (json.message) return onErrorCB(json.message);
+      if (json.message) return onError(json.message);
       else {
-        SessionCookie.set(json.token);
+        SessionCookie.set(json);
         cb(json);
       }
     });
