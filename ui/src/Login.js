@@ -42,7 +42,7 @@ const Login = ({ csrfToken, setUsername }) => {
     <div className="Login">
       <Grid container spacing={1}>
         <Grid item xs={12} className={classes.items}>
-          <h1>Login</h1>
+          <h1>Login or Signup</h1>
         </Grid>
         <Grid item xs={12} className={classes.items}>
           <div>
