@@ -46,6 +46,7 @@ const App = () => {
           onSaveGame={Client.saveGame(game, flags, seconds, csrfToken)}
           showSave={game && !game.hasWon && !game.hasLost}
           onResumeGameSelection={restoreGame}
+          username={username}
         />
         {game && (
           <Grid
@@ -73,7 +74,7 @@ const App = () => {
 
   return (
     <div className="App">
-      <h1>{"Welcome to Minesweeper " + username + "!"}</h1>
+      <h1>{"Welcome to Minesweeper!"}</h1>
       <Router>
         <div>
           <Switch>

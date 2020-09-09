@@ -4,6 +4,8 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import SaveGameDialog from "./SaveGameDialog";
 import ResumeGameDialog from "./ResumeGameDialog";
+import Auth from "./Auth";
+import { useHistory } from "react-router-dom";
 export const Menu = ({
   isAuthMode,
   onNewGame,
@@ -11,11 +13,12 @@ export const Menu = ({
   showSave,
   getResumeGameOptions,
   onResumeGameSelection,
+  username,
 }) => {
   const [rows, setRows] = useState(10);
   const [cols, setCols] = useState(15);
   const [mines, setMines] = useState(10);
-
+  const history = useHistory();
   return (
     <div>
       <TextField
@@ -54,6 +57,19 @@ export const Menu = ({
           getResumeGameOptions={getResumeGameOptions}
         />
       )}
+      {isAuthMode && (
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={() => {
+            Auth.signout();
+            let { from } = { from: { pathname: "/" } };
+            return history.replace(from);
+          }}
+        >
+          {"Sign Out, " + username}
+        </Button>
+      )}
     </div>
   );
 };
@@ -64,4 +80,5 @@ Menu.propTypes = {
   onSaveGame: PropTypes.func,
   showSave: PropTypes.bool,
   onResumeGameSelection: PropTypes.func,
+  username: PropTypes.string,
 };
