@@ -10,16 +10,7 @@ import models.GameModel._
 import play.api.libs.json.Json
 
 class GameDAO(databaseConfig: DatabaseConfig) {
-  implicit val cs = IO.contextShift(ExecutionContexts.synchronous)
-  case class DBGame(username: String, savedgame: String, name: String) {
-    def toSaveGame: Option[SaveGame] = {
-      Json.toJson(savedgame).validate[SaveGame].fold[Option[SaveGame]](_ => None, Some(_))
-    }
-  }
-
-  def saveGame(saveGame: SaveGame, username: String): Int = {
-    val xa = databaseConfig.getTransactor
-
+  object Queries {
     val create = sql"""create table if not exists games (
       id serial not null primary key, 
       username varchar(225) not null, 
@@ -33,22 +24,34 @@ class GameDAO(databaseConfig: DatabaseConfig) {
            on conflict (name) do update set savedgame = $jsonGame""".update.run
     }
 
-    (create, insert(saveGame, username)).mapN(_ + _).transact(xa).unsafeRunSync()
+    def list(username: String) =
+      sql"select name from games where username = $username order by id desc"
+        .query[String]
 
+  }
+
+  import Queries._
+
+  implicit val cs = IO.contextShift(ExecutionContexts.synchronous)
+  case class DBGame(username: String, savedgame: String, name: String) {
+    def toSaveGame: Option[SaveGame] = {
+      Json.toJson(savedgame).validate[SaveGame].fold[Option[SaveGame]](_ => None, Some(_))
+    }
+  }
+
+  def saveGame(saveGame: SaveGame, username: String): Int = {
+    val xa = databaseConfig.getTransactor
+    (create, insert(saveGame, username)).mapN(_ + _).transact(xa).unsafeRunSync()
   }
 
   def listOfGames(username: String): List[String] = {
     val xa = databaseConfig.getTransactor
+    val z = for {
+      _ <- create
+      a <- list(username).stream.take(10).compile.toList
+    } yield a
+    z.transact(xa).unsafeRunSync()
 
-    val list: List[String] = sql"select name from games where username = $username order by id desc"
-      .query[String]
-      .stream
-      .take(10)
-      .compile
-      .toList
-      .transact(xa)
-      .unsafeRunSync()
-    list
   }
 
   def getGame(name: String, username: String): Option[SaveGame] = {
