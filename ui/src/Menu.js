@@ -30,6 +30,10 @@ export const Menu = ({
   const history = useHistory();
   const classes = useStyles();
 
+  const forceLimits = (min, max, val) => {
+    return Math.max(min, Math.min(val, max));
+  };
+
   const getUsername = () => {
     return SessionCookie.get().split("-")[0];
   };
@@ -39,20 +43,20 @@ export const Menu = ({
         type="number"
         label="Rows"
         value={rows}
-        onChange={(e) => setRows(Math.max(1, Math.min(e.target.value, 50)))}
+        onChange={(e) => setRows(forceLimits(2, 30, e.target.value))}
       />
       <TextField
         type="number"
         label="Columns"
         value={cols}
-        onChange={(e) => setCols(Math.max(1, Math.min(e.target.value, 50)))}
+        onChange={(e) => setCols(forceLimits(2, 20, e.target.value))}
       />
       <TextField
         type="number"
         label="Mines"
         value={mines}
         onChange={(e) =>
-          setMines(Math.max(0, Math.min(e.target.value, rows * cols - 1)))
+          setMines(forceLimits(1, rows * cols - 1, e.target.value))
         }
       />
       <Button

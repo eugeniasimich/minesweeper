@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 
 import { Grid } from "./Grid";
 
-describe("App tests", () => {
+describe("Grid", () => {
   it("renders without crashing", () => {
     const div = document.createElement("div");
     ReactDOM.render(
