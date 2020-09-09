@@ -41,7 +41,7 @@ class UserDAO(databaseConfig: DatabaseConfig) {
     getByUserName(username).option.transact(xa).unsafeRunSync().map(User(username, _))
   }
 
-  def addUser(username: String, password: String): Option[User] = {
+  def addUser(username: String, password: String): Option[User] = { //TODO encrypt
     val xa = databaseConfig.getTransactor
     create.transact(xa).unsafeRunSync()
     if (getUser(username).nonEmpty) {
