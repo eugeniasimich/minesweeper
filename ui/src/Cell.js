@@ -5,7 +5,13 @@ import Button from "@material-ui/core/Button";
 import FlagOutlinedIcon from "@material-ui/icons/FlagOutlined";
 import Brightness6OutlinedIcon from "@material-ui/icons/Brightness6Outlined";
 
-export const Cell = ({ value, onClick, onCellRightClick, hasFlag }) => {
+export const Cell = ({
+  value,
+  onClick,
+  onCellRightClick,
+  hasFlag,
+  cellsDisabled,
+}) => {
   const label = () => {
     if (value.isOpen) {
       return value.isMine ? (
@@ -24,7 +30,7 @@ export const Cell = ({ value, onClick, onCellRightClick, hasFlag }) => {
     }
   };
 
-  const isDisabled = value.isOpen;
+  const isDisabled = cellsDisabled || value.isOpen;
   const colorValue = () => {
     if (!value.isOpen) return "black";
     else if (hasFlag) return "red";
@@ -74,4 +80,5 @@ Cell.propTypes = {
   onClick: PropTypes.func,
   onCellRightClick: PropTypes.func,
   hasFlag: PropTypes.bool,
+  cellsDisabled: PropTypes.bool,
 };

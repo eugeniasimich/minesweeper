@@ -4,7 +4,13 @@ import React from "react";
 import { Cell } from "./Cell";
 import { cellHasFlag } from "./flagUtils";
 
-export const Grid = ({ gridData, onCellClick, onCellRightClick, flags }) => {
+export const Grid = ({
+  gridData,
+  onCellClick,
+  onCellRightClick,
+  flags,
+  gridDisabled,
+}) => {
   const renderRow = (row, x) => {
     return row.map((cell, y) => {
       return (
@@ -14,6 +20,7 @@ export const Grid = ({ gridData, onCellClick, onCellRightClick, flags }) => {
             onCellRightClick={(e) => onCellRightClick(e, x, y)}
             value={cell}
             hasFlag={cellHasFlag(x, y, flags)}
+            cellsDisabled={gridDisabled}
           />
         </td>
       );
@@ -34,4 +41,5 @@ Grid.propTypes = {
   onCellClick: PropTypes.func,
   onCellRightClick: PropTypes.func,
   flags: PropTypes.arrayOf(posShape),
+  gridDisabled: PropTypes.bool,
 };

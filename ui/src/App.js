@@ -29,6 +29,16 @@ const App = () => {
   const [game, setGame] = useState();
   const [seconds, setSeconds] = useState(0);
   const [csrfToken, setCsrfToken] = useState();
+  const [gridDisabled, setGridDisabled] = useState(false);
+
+  const openCellCB = (game) => {
+    setGame(game);
+    setGridDisabled(false);
+  };
+  const onCellClick = (i, j) => {
+    setGridDisabled(true);
+    Client.openCell(i, j, game, csrfToken, openCellCB);
+  };
 
   const GamePage = (isAuthMode) => {
     return (
@@ -49,11 +59,10 @@ const App = () => {
         {game && (
           <Grid
             onCellRightClick={flagCell}
-            onCellClick={(i, j) =>
-              Client.openCell(i, j, game, csrfToken, setGame)
-            }
+            onCellClick={onCellClick}
             gridData={game.data}
             flags={flags}
+            gridDisabled={gridDisabled}
           />
         )}
         {game && game.hasWon && <h1>You won!</h1>}
