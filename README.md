@@ -9,19 +9,26 @@ The classical game of minesweeper implemented in Scala using Play for a the REST
 
 * [Node.js](https://nodejs.org/)
 * [scala](https://www.scala-lang.org/download/)
+* [PostgreSQL](https://www.postgresql.org/)
 
 ### Then
 
 * Fork or clone this repository.
 
-* Used any of the following [SBT](http://www.scala-sbt.org/) commands which will intern trigger frontend associated npm scripts.
+* Set the environment variable `JDBC_DATABASE_URL` to match the path to a database that you have in postgres, for example_ 
+```
+export JDBC_DATABASE_URL="_jdbc:postgresql://localhost/buscamines_"
+```
+
+* Use any of the following [SBT](http://www.scala-sbt.org/) commands which will intern trigger frontend associated npm scripts.
 
 ```
     sbt stage       # Build your application from your project’s source directory
     sbt run         # Run both backend and frontend builds in watch mode
     sbt clean       # Clean existing build artifacts
+    sbt test        # To run both front and back ens tests
 ```
-
+If you go with `sbt stage && sbt run` you should be able to access the app at `http://localhost:9000` 
 
 ## Directory Layout
 
