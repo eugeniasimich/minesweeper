@@ -21,8 +21,10 @@ export const SaveGameDialog = ({ onConfirm }) => {
   };
 
   const handleConfirm = () => {
-    setOpen(false);
-    onConfirm(name);
+    if (name) {
+      setOpen(false);
+      onConfirm(name);
+    }
   };
 
   return (
