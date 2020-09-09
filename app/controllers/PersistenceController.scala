@@ -1,13 +1,10 @@
 package controllers
 
-import java.time.LocalDateTime
-
 import javax.inject._
-import models.{GameDAO, PostgresConfig, SessionDAO, UserDAO}
+import models.{GameDAO, PostgresConfig, UserDAO}
 import play.api.mvc._
-import play.api.libs.json.{JsError, JsString, JsValue, Json}
+import play.api.libs.json.{JsError, JsString, Json}
 import models.GameModel._
-import models.UserModel.User
 import play.api.Configuration
 @Singleton
 class PersistenceController @Inject()(cc: ControllerComponents, config: Configuration)

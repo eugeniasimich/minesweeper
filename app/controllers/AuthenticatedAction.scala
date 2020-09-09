@@ -2,7 +2,8 @@ package controllers
 
 import java.time.LocalDateTime
 
-import models.{SessionDAO, UserDAO}
+import models.SessionModel.SessionDAO
+import models.UserDAO
 import models.UserModel.User
 import play.api.mvc.{
   BaseController,

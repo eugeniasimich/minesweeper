@@ -47,15 +47,15 @@ class UserDAO(databaseConfig: DatabaseConfig) {
 
   def addUser(username: String, password: String): Option[User] = { //TODO encrypt
     val xa = databaseConfig.getTransactor
-    create.run.transact(xa).unsafeRunSync()
-    if (getUser(username).nonEmpty) {
-      None
-    } else {
-      val user = User(username, password)
-      if (insert(user).run.transact(xa).unsafeRunSync() == 1)
-        Some(user)
-      else None
-    }
+    val user = User(username, password)
+    val resultDescription = for {
+      _ <- create.run
+      u <- insert(user).run
+    } yield u
+    if (resultDescription.transact(xa).unsafeRunSync() == 1)
+      Some(user)
+    else None
+
   }
 
 }
