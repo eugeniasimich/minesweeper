@@ -15,13 +15,14 @@ class GameDAO(databaseConfig: DatabaseConfig) {
       id serial not null primary key, 
       username varchar(225) not null, 
       savedgame text, 
-      name varchar(255) unique not null)""".update
+      name varchar(255) not null,
+      constraint unq_name_username unique(name,username))""".update
 
     def insert(saveGame: SaveGame, username: String) = {
       val jsonGame = Json.stringify(Json.toJson(saveGame))
       sql"""insert into games (username, savedgame, name) 
            values ( $username, $jsonGame, ${saveGame.name}) 
-           on conflict (name) do update set savedgame = $jsonGame""".update
+           on conflict (name,username) do update set savedgame = $jsonGame""".update
     }
 
     def list(username: String) =
