@@ -76,7 +76,7 @@ export const Cell = ({
 };
 
 Cell.propTypes = {
-  value: PropTypes.objectOf(PropTypes.shape(cellShape)),
+  value: PropTypes.shape(cellShape),
   onClick: PropTypes.func,
   onCellRightClick: PropTypes.func,
   hasFlag: PropTypes.bool,

@@ -37,9 +37,9 @@ export const Grid = ({
 };
 
 Grid.propTypes = {
-  gridData: PropTypes.arrayOf(PropTypes.arrayOf(cellShape)),
+  gridData: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.shape(cellShape))),
   onCellClick: PropTypes.func,
   onCellRightClick: PropTypes.func,
-  flags: PropTypes.arrayOf(posShape),
+  flags: PropTypes.arrayOf(PropTypes.shape(posShape)),
   gridDisabled: PropTypes.bool,
 };

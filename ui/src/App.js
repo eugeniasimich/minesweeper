@@ -23,6 +23,7 @@ const App = () => {
     savedGame && setSeconds(savedGame.seconds);
     savedGame && setFlags(savedGame.flags);
     savedGame && setGame(savedGame.g);
+    setGridDisabled(false);
     //TODO set name so it can be overwritten
   };
   const [flags, setFlags] = useState([]);
