@@ -1,21 +1,17 @@
 import React from "react";
-import ReactDOM from "react-dom";
-
+import { render } from "@testing-library/react";
 import { Grid } from "./Grid";
 
 describe("Grid", () => {
   it("renders without crashing", () => {
-    const div = document.createElement("div");
-    ReactDOM.render(
+    render(
       <Grid
         gridData={[]}
         onCellClick={() => {}}
         onCellRightClick={() => {}}
         flags={[]}
         gridDisabled={false}
-      />,
-      div
+      />
     );
-    ReactDOM.unmountComponentAtNode(div);
   });
 });

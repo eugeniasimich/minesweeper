@@ -1,12 +1,10 @@
 import React from "react";
-import ReactDOM from "react-dom";
-
+import { render } from "@testing-library/react";
 import { Menu } from "./Menu";
 
 describe("Menu", () => {
   it("renders without crashing", () => {
-    const div = document.createElement("div");
-    ReactDOM.render(
+    render(
       <Menu
         isAuthMode={false}
         onNewGame={() => {}}
@@ -14,9 +12,7 @@ describe("Menu", () => {
         showSave={false}
         getResumeGameOptions={() => {}}
         onResumeGameSelection={() => {}}
-      />,
-      div
+      />
     );
-    ReactDOM.unmountComponentAtNode(div);
   });
 });
