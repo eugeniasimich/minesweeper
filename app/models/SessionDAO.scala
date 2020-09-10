@@ -19,7 +19,7 @@ object SessionModel {
 
   object SessionDAO extends SessionDAO {
 
-    //in memory session for simplicity
+    //in memory session for simplicity // TODO remove expired
     private val sessions: MMap[String, Session] = new MMap
 
     def getSession(token: String): Option[Session] = {

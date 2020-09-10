@@ -6,18 +6,15 @@ import models.UserModel.{User, checkUsernamePassword}
 
 case class LoginManager(userDAO: UserDAO, sessionDAO: SessionDAO) {
   def login(user: User): Option[Session] = {
-    checkUsernamePassword(user, userDAO.getUser(user.username)) match {
-      case false => None
-      case true => {
-        Some(sessionDAO.sessionForUser(user.username))
-      }
-    }
+    if (checkUsernamePassword(user, userDAO.getUser(user.username)))
+      Some(sessionDAO.sessionForUser(user.username))
+    else None
   }
 
   def signup(user: User): Option[Session] = {
-    if (userDAO.getUser(user.username).nonEmpty) {
+    if (userDAO.getUser(user.username).nonEmpty)
       None
-    } else {
+    else {
       val maybeUser: Option[User] = userDAO.addUser(user.username: String, user.password: String)
       maybeUser.map(_ => sessionDAO.sessionForUser(user.username))
     }
