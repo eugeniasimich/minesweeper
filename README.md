@@ -17,7 +17,7 @@ The classical game of minesweeper implemented in Scala using Play for a the REST
 
 * Set the environment variable `JDBC_DATABASE_URL` to match the path to a database that you have in postgres, for example_ 
 ```
-export JDBC_DATABASE_URL="_jdbc:postgresql://localhost/buscamines_"
+export JDBC_DATABASE_URL="jdbc:postgresql://localhost/buscamines"
 ```
 
 * Use any of the following [SBT](http://www.scala-sbt.org/) commands which will intern trigger frontend associated npm scripts.
@@ -101,6 +101,17 @@ Flags are persisted in the frontend, as they do not hold more semantics than pre
 
 Game model is redundant for the sake of simplicity, at the expense of memory complexity.
 
-Sessions are stored in memory also for simplicity, even though the proper way would have been having a database table with an in memory cache.
-
 Use doobie for DB access, to make use of its a pure functional JDBC layer for Scala and Cats. It would have been even better to have it coupled with cats effect or zio, so there's no need to call unsafeRun to get out of the monad, from the description to effects.
+
+Some decisions taken due to lack of time and inherent simplicity of a toy application are: 
+- Write only some set of tests:
+Tests were written using different libraries and paradigms 
+(behaviour frontend tests using the `react-testing-library`, property-based testing using `scala-check`, unit tests using both `specs2` and `scala-test` and finally query checks to avoid run time db errors using `doobie-specs2`), but they do not represent a great coverage of the whole project as there are still modules and component not tested.
+
+- Sessions are stored in memory also for simplicity (with a thread safe mutable map), even though the proper way would have been having a database table with an in memory cache.
+
+- DB encryption is missing.
+
+- Log in is implemented in a very simple way, with no email verification and no password restoration. 
+
+- Some prod configuration secrets are part of the repo.
